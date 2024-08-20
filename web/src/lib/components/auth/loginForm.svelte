@@ -1,7 +1,30 @@
 <script lang="ts">
-    import FormInput from "./formInput.svelte";
+    import { goto } from "$app/navigation";
+    import { pocketbase } from "$lib/utils/pocketbase";
     import Title from "../navbar/title.svelte";
     import { KeyRound, Mail } from "lucide-svelte";
+
+    const handleSubmit = async (e: Event) => {
+        try{
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            await pocketbase.collection("users").authWithPassword(data.email as string, data.password as string);
+        }
+        catch(err){
+            console.error("Error logging in: ", err);
+        }
+        
+        if(pocketbase.authStore.isValid){
+            pocketbase.authStore.exportToCookie({ secure: false});
+            console.log(document.cookie);
+            goto("/store");
+        }
+        else{
+            alert("Wrong Credentials");
+        }
+    };
 </script>
 
 <div class="flex flex-col items-center justify-center gap-5 shadow-2xl p-5 bg-primary-content rounded-lg mt-24 w-full">
@@ -22,9 +45,8 @@
     </div>
 
     <form
-        action="?/login"
-        method="post"
         class="flex flex-col items-center justify-center gap-3 w-full"
+        on:submit={handleSubmit}
     >
         <label class="input input-bordered input-sm flex items-center gap-2 w-full">
             <Mail class="w-4 h-4"/>

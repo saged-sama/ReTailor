@@ -1,28 +1,22 @@
 <script lang="ts">
+    import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
     import { User } from "lucide-svelte";
-    import { pocketbase } from "$lib/utils/pocketbase";
-
-    let isLoggedIn = false;
-
-    $: {
-        isLoggedIn = pocketbase.authStore.isValid;
-    }
+    export let user: any;
+    export let size: number = 10;
+    export let rounded: string = "full";
+    let classs;
+    
+    $: classs = `w-${size} h-${size} rounded-${rounded} overflow-hidden`;
 </script>
 
-{#if isLoggedIn}
-    <a class="rounded-lg" href="/">
-        <div class="rounded-full">
-            <User />
-        </div>
-        <div>
-            Username
-        </div>
-    </a>
-    <a href="/logout" class="text-warning">
-        Logout
-    </a>
+{#if user?.avatar}
+    <div class={classs}>
+        <img
+            src={`${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
+            alt="Avatar"
+            class="w-full h-full object-cover"
+        />
+    </div>
 {:else}
-    <a class="btn btn-primary btn-sm md:btn-md" href="/auth/register">
-        Get Started
-    </a>
+    <User class="w-4 h-4" />
 {/if}
