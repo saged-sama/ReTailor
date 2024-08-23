@@ -20,7 +20,7 @@
     };
 </script>
 
-<div class="flex flex-col w-full md:w-2/3 p-5 gap-3 shadow-lg">
+<div class="flex flex-col w-full p-5 gap-3 shadow-lg">
     <h1 class=" font-platypi font-bold">
         Personal Information
     </h1>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 {#if user.role.toLowerCase() === "customer"}
-                    <a href="/apply" class="btn btn-success btn-sm max-md:btn-xs">
+                    <a href="/app/apply" class="btn btn-success btn-sm max-md:btn-xs">
                         Apply to Become a Tailor <SquareArrowOutUpRight class="w-4 h-4" /> 
                     </a>
                 {/if}
@@ -44,7 +44,7 @@
 
             <div class="flex max-md:flex-col gap-2 md:items-center justify-start w-full">
                 <div class="w-1/6 font-bold">
-                    Gender:
+                    Gender: 
                 </div>
                 <select name="gender" id="gender" value={user.gender || "Male"} class="select select-bordered select-sm">
                     <option value="" disabled>Select your gender</option>

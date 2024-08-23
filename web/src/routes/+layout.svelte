@@ -4,7 +4,7 @@
     import "../app.css";
 </script>
 
-<div class="flex flex-col items-center justify-between min-w-screen min-h-screen">
+<div class="flex flex-col items-center justify-between min-w-screen min-h-screen bg-[url('/background.jpg')]">
     <Navbar />
     <div class="w-screen h-full mt-14">
         <slot></slot>

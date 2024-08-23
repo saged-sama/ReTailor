@@ -7,8 +7,6 @@
     let isEditing = false;
     let currentAvatar: string = `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
 
-
-    console.log(user);
     const handleChange = (e: any) => {
         const file = e.target.files[0];
         currentAvatar = URL.createObjectURL(file) || `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
@@ -34,7 +32,7 @@
 </script>
 
 <div
-    class="flex md:flex-row flex-col items-center md:justify-between container gap-3 w-full md:w-2/3 shadow-lg p-5"
+    class="flex md:flex-row flex-col items-center md:justify-between container gap-3 w-full shadow-lg p-5"
 >
     {#if isEditing}
         <form on:submit={updateBasicInfo} class="{pocketbase.authStore.model?.id !== user.id ? "hidden": "flex"} flex-col gap-5 w-full">
