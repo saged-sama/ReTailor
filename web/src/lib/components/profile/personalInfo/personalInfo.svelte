@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 {#if user.role.toLowerCase() === "customer"}
-                    <a href="/app/apply" class="btn btn-success btn-sm max-md:btn-xs">
+                    <a href={`/app/${user.id}/apply`} class="btn btn-success btn-sm max-md:btn-xs">
                         Apply to Become a Tailor <SquareArrowOutUpRight class="w-4 h-4" /> 
                     </a>
                 {/if}

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Settings } from "lucide-svelte";
     import { pocketbase } from "$lib/utils/pocketbase";
     import Avatar from "./avatar.svelte";
     import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
@@ -14,7 +13,7 @@
 </script>
 
 {#if isLoggedIn}
-    <a class="md:hidden rounded-lg" href={`/app/profile/${user?.id}`}>
+    <a class="md:hidden rounded-lg" href={`/app/${user?.id}/profile`}>
         <div class="rounded-full">
             <Avatar user={user} size={5}/>
         </div>
@@ -37,13 +36,10 @@
             class="menu dropdown-content rounded-md z-[1] w-52 p-2 gap-2 shadow-xl bg-primary-content text-sm"
         >
             <li>
-                <a href={`/app/profile/${user?.id}`}>
+                <a href={`/app/${user?.id}/profile`}>
                     <Avatar user={user} size={5} />
                     {[user?.firstName || "", user?.lastName || ""].join(" ")}
                 </a>
-            </li>
-            <li>
-                <a href="/settings"><Settings class="w-4 h-4" /> Settings </a>
             </li>
             <li>
                 <button

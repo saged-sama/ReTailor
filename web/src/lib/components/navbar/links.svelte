@@ -3,8 +3,14 @@
     import { page } from "$app/stores";
     import { Home, Menu, ShoppingCart, Store, User } from "lucide-svelte";
     import Options from "./options.svelte";
+    import { cart } from "$lib/stores/cart";
 
     let currentUrl = $page.url;
+    let cartLength = 0;
+
+    cart.subscribe((value) => {
+        cartLength = value.length;
+    });
 
     $: {
         currentUrl = $page.url;
@@ -25,11 +31,11 @@
 </details>
 
 <div class="hidden md:flex items-center justify-center gap-5">
-    <SearchBar />
+    <!-- <SearchBar /> -->
     <div class="flex items-center justify-center rounded-lg gap-1">
         <a class="btn btn-sm {currentUrl.pathname === "/" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/"> <Home class="w-5 h-5" /> </a>
         <a class="btn btn-sm {currentUrl.pathname === "/store" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/store"> <Store class="w-5 h-5" /> </a>
-        <a class="btn btn-sm {currentUrl.pathname === "/cart" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/cart"> <ShoppingCart class="w-5 h-5" /> </a>
+        <a class="btn btn-sm flex gap-0 {currentUrl.pathname === "/cart" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/cart"> <ShoppingCart class="w-5 h-5" /> <sup class="absolute ml-6 mt-2 p-2 rounded-full text-xs text-red-400 shadow-lg shadow-green-500">{cartLength}</sup> </a>
     </div>
     <Options />
 </div>

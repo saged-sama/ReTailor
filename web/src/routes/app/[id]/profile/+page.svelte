@@ -12,6 +12,10 @@
     });
 </script>
 
+<svelte:head>
+    <title>Retailor | Profile{user?.id ? ` | ${user.firstName} ${user.lastName}`: ""}</title>
+</svelte:head>
+
 {#if user}
     <div class="flex flex-col items-center justify-center p-2 md:p-10 md:gap-10 gap-5">
         <BasicInfo {user}/>
