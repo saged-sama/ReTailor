@@ -35,7 +35,7 @@
     <div class="flex items-center justify-center rounded-lg gap-1">
         <a class="btn btn-sm {currentUrl.pathname === "/" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/"> <Home class="w-5 h-5" /> </a>
         <a class="btn btn-sm {currentUrl.pathname === "/store" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/store"> <Store class="w-5 h-5" /> </a>
-        <a class="btn btn-sm flex gap-0 {currentUrl.pathname === "/cart" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/cart"> <ShoppingCart class="w-5 h-5" /> <sup class="absolute ml-6 mt-2 p-2 rounded-full text-xs text-red-400 shadow-lg shadow-green-500">{cartLength}</sup> </a>
+        <a class="btn btn-sm flex gap-0 {currentUrl.pathname === "/cart" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/cart"> <ShoppingCart class="w-5 h-5" /> <sup class="absolute ml-6 mt-3 p-2 rounded-full text-xs text-red-400">{cartLength}</sup> </a>
     </div>
     <Options />
 </div>
