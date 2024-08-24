@@ -78,16 +78,16 @@
 
 {#if products.length > 0}
     <div class="relative flex h-full items-center justify-center">
-        <button class="absolute z-40 -left-5 rounded-full transition-all duration-500 {scrollPosition === 2 || scrollPosition === 1? "opacity-100": "opacity-0"}" on:click={scrollLeft}>
+        <button class="hidden md:block absolute z-40 -left-5 rounded-full transition-all duration-500 {scrollPosition === 2 || scrollPosition === 1? "opacity-100": "opacity-0"}" on:click={scrollLeft}>
             <CircleChevronLeft class="w-12 h-12 fill-black"/>
         </button>
-        <div bind:this={productGrid} class="grid grid-flow-col max-md:grid-rows-2 items-center h-full overflow-hidden py-3 gap-2">
+        <div bind:this={productGrid} class="grid grid-flow-col max-md:grid-rows-2 items-center h-full overflow-auto xl:overflow-hidden py-3 gap-2">
             {#each products as product}
                 <ProductTile {product} />
             {/each}
         </div>
         
-        <button class="absolute z-40 -right-5 rounded-full transition-all duration-500 {scrollPosition === 0 || scrollPosition === 1? "opacity-100": "opacity-0"}" on:click={scrollRight}>
+        <button class="hidden md:block absolute z-40 -right-5 rounded-full transition-all duration-500 {scrollPosition === 0 || scrollPosition === 1? "opacity-100": "opacity-0"}" on:click={scrollRight}>
             <CircleChevronRight class=" w-12 h-12 fill-black"/>
         </button>
     </div>
