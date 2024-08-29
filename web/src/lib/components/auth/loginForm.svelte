@@ -16,12 +16,7 @@
             console.error("Error logging in: ", err);
         }
         
-        if(pocketbase.authStore.isValid){
-            pocketbase.authStore.exportToCookie({ secure: false});
-            console.log(document.cookie);
-            goto("/store");
-        }
-        else{
+        if(!pocketbase.authStore.isValid){
             alert("Wrong Credentials");
         }
     };

@@ -5,11 +5,11 @@
 
     export let user: any;
     let isEditing = false;
-    let currentAvatar: string = `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
+    let currentAvatar: string = `${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`;
 
     const handleChange = (e: any) => {
         const file = e.target.files[0];
-        currentAvatar = URL.createObjectURL(file) || `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
+        currentAvatar = URL.createObjectURL(file) || `${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`;
     }
 
     const updateBasicInfo = async (e: any) => {
@@ -18,13 +18,13 @@
             const form = e.target;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-            if(currentAvatar === `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`){
+            if(currentAvatar === `${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`){
                 data.avatar = user.avatar;
             }
             user = await pocketbase.collection("users").update(user.id, data);
             isEditing = false;
             form.reset();
-            currentAvatar = `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
+            currentAvatar = `${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`;
         } catch (err) {
             console.error("Could not edit basic info: ", err);
         }
@@ -114,7 +114,7 @@
                 >
                 <button class="btn btn-sm" on:click={() => {
                     isEditing = false;
-                    currentAvatar = `${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`;
+                    currentAvatar = `${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`;
                 }}>
                 Cancel</button
                 >
@@ -124,7 +124,7 @@
         <div class="flex md:flex-row flex-col items-center justify-center gap-5">
             <div class="md:w-20 md:h-20 w-36 h-36 rounded-full overflow-hidden">
                 <img
-                    src={`${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
+                    src={`${PUBLIC_POCKETBASE_URL}/api/files/users/${user?.id}/${user?.avatar}`}
                     alt="Avatar"
                     class="w-full h-full object-cover"
                 />
