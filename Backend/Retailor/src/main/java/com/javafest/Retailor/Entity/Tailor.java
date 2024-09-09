@@ -1,5 +1,6 @@
 package com.javafest.Retailor.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javafest.Retailor.Enum.TailorStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class Tailor {
             joinColumns = @JoinColumn(name="Tailor_id"),
             inverseJoinColumns = @JoinColumn(name = "Product_id")
     )
+    @JsonIgnore
     private Set<Product> products;
     private String nationalId;
     private String tradeLicense;

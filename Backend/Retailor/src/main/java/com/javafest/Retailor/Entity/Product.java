@@ -1,5 +1,6 @@
 package com.javafest.Retailor.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Product {
     private Boolean isCustomizable;
     private Double basePrice;
     @ManyToMany(mappedBy = "products")
+    @JsonIgnore
     private Set<Tailor> tailors;
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,6 +1,7 @@
 package com.javafest.Retailor.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javafest.Retailor.Enum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class Users implements UserDetails {
     private Long id;
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
