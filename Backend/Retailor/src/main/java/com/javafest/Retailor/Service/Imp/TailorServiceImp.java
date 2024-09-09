@@ -2,6 +2,7 @@ package com.javafest.Retailor.Service.Imp;
 
 import com.javafest.Retailor.Dto.TailorDto;
 import com.javafest.Retailor.Entity.Tailor;
+import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.TailorStatus;
 import com.javafest.Retailor.Repository.TailorRepo;
 import com.javafest.Retailor.Service.TailorService;
@@ -79,5 +80,10 @@ public class TailorServiceImp implements TailorService {
         }
 
         return tailorDtoList;
+    }
+
+    @Override
+    public Tailor getByUser(Users users) {
+        return tailorRepo.findByUsers(users);
     }
 }

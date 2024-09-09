@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,7 +36,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id")
     )
     @Column(length = 100)
-    private Set<String> images;
+    private List<String> images;
 
     private Boolean isCustomizable;
     private Double basePrice;

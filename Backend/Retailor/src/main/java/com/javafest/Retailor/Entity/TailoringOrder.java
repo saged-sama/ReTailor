@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.query.Order;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,12 +34,12 @@ public class TailoringOrder {
     @ElementCollection
     @CollectionTable(name = "tailoring_order_images", joinColumns = @JoinColumn(name = "order_id"))
     @Column(length = 100)
-    private Set<String> images;
+    private List<String> images;
 
     @ElementCollection
     @CollectionTable(name = "tailoring_order_customization", joinColumns = @JoinColumn(name = "order_id"))
     @Column(length = 100)
-    private Set<String> customization;
+    private List<String> customization;
 
     @Column(length = 1000)
     private String specificRequirements;

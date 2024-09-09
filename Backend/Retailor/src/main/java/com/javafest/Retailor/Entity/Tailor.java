@@ -50,27 +50,27 @@ public class Tailor {
     @ElementCollection
     @CollectionTable(name = "tailor_shirt_design", joinColumns = @JoinColumn(name = "tailor_id"))
     @Column(name = "shirt_design", length = 100)
-    private Set<String> shirtDesign;
+    private List<String> shirtDesign;
 
     @ElementCollection
     @CollectionTable(name = "tailor_pant_design", joinColumns = @JoinColumn(name = "tailor_id"))
     @Column(name = "pant_design", length = 100)
-    private Set<String> pantDesign;
+    private List<String> pantDesign;
 
     @ElementCollection
     @CollectionTable(name = "tailor_suite_design", joinColumns = @JoinColumn(name = "tailor_id"))
     @Column(name = "suite_design", length = 100)
-    private Set<String> suiteDesign;
+    private List<String> suiteDesign;
 
     @ElementCollection
     @CollectionTable(name = "tailor_threePiece_design", joinColumns = @JoinColumn(name = "tailor_id"))
     @Column(name = "threePiece_design", length = 100)
-    private Set<String> threePieceDesign;
+    private List<String> threePieceDesign;
 
     @ElementCollection
     @CollectionTable(name = "tailor_saree_design", joinColumns = @JoinColumn(name = "tailor_id"))
     @Column(name = "saree_design", length = 100)
-    private Set<String> sareeDesign;
+    private List<String> sareeDesign;
 
     @OneToMany(mappedBy = "tailor", cascade = CascadeType.ALL)
     private List<Orders> orders;

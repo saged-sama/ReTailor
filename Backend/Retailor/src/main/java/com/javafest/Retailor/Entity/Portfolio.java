@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 
@@ -29,7 +30,7 @@ public class Portfolio {
     @ElementCollection
     @CollectionTable(name = "portfolio_images", joinColumns = @JoinColumn(name = "portfolio_id"))
     @Column(length = 100)
-    private Set<String> images;
+    private List<String> images;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,6 +1,7 @@
 package com.javafest.Retailor.Repository;
 
 import com.javafest.Retailor.Entity.Tailor;
+import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.TailorStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,5 @@ public interface TailorRepo extends JpaRepository<Tailor,Long> {
     public void deleteById(Long id);
 
     public List<Tailor> findAllByTailorStatus(TailorStatus tailorStatus);
+    public Tailor findByUsers(Users users);
 }
