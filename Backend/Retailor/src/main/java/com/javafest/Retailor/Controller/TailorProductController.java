@@ -1,6 +1,7 @@
 package com.javafest.Retailor.Controller;
 
 import com.javafest.Retailor.Config.JwtService;
+import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
@@ -8,9 +9,12 @@ import com.javafest.Retailor.Repository.UsersRepo;
 import com.javafest.Retailor.Service.FileService;
 import com.javafest.Retailor.Service.ProductService;
 import com.javafest.Retailor.Service.TailorService;
+import com.javafest.Retailor.Service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +34,7 @@ public class TailorProductController {
     @Autowired
     private JwtService jwtService;
     @Autowired
-    private UsersRepo usersRepo;
+    private UsersService usersService;
     @Autowired
     private FileService fileService;
 
@@ -46,12 +50,17 @@ public class TailorProductController {
             throw new Exception("Invalid Authorization header.");
         }
 
-        Users users = usersRepo.findByEmail(email).orElseThrow();
+        Users users = usersService.getByEmail(email);
+
+        //System.out.println(users);
 
         Set<Tailor> tailorSet=new HashSet<>();
         tailorSet.add(tailorService.getByUser(users));
         List<String> Images= fileService.saveFiles(files);
-        product.setTailors(tailorSet);
+        for (Tailor t : tailorSet) {
+            product.addTailor(t);// This ensures that the product is added to the tailor as well
+        }
+        //System.out.println(product.getTailors());
         product.setImages(Images);
         try {
              Product savedProduct = productService.save(product);
@@ -61,5 +70,59 @@ public class TailorProductController {
             // Handle any exceptions and return a 500 (INTERNAL SERVER ERROR) status
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/product/update")
+    public ResponseEntity<Product> updateProduct(@ModelAttribute Product product,
+                                                 @RequestParam("avatars") MultipartFile[] files) throws Exception{
+        //System.out.println("Vitore");
+        Product product1 = productService.getById(product.getId());
+        product1.setName(product1.getName());
+        product1.setDescription(product.getDescription());
+        product1.setAvailability(product.getAvailability());
+        product1.setCategory(product.getCategory());
+        product1.setSoldAt(product.getSoldAt());
+        for(var image: product1.getImages()){
+            fileService.deleteFile(image);
+        }
+        //System.out.println("Aro vitore");
+        List<String> Images= fileService.saveFiles(files);
+        product1.setImages(Images);
+        product1.setIsCustomizable(product.getIsCustomizable());
+        product1.setBasePrice(product.getBasePrice());
+        try {
+            Product savedProduct = productService.save(product1);
+
+            return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        } catch (Exception e) {
+            // Handle any exceptions and return a 500 (INTERNAL SERVER ERROR) status
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/product/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) throws IOException {
+        Product product = productService.getById(id);
+        for(var image: product.getImages()){
+            fileService.deleteFile(image);
+        }
+        for (Tailor t : product.getTailors()) {
+            product.removeTailor(t);// This ensures that the product is added to the tailor as well
+        }
+        return productService.deleteProductById(id);
+    }
+
+    @GetMapping("/product/display/{offset}/{pageSize}/{id}")
+    public ResponseEntity<Page<ProductDto>> getTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id){
+        return ResponseEntity.ok(tailorService.displayTailorProduct(offset,pageSize,id));
+    }
+
+    @GetMapping("/product/sold/{offset}/{pageSize}/{id}")
+    public ResponseEntity<Page<ProductDto>> getSoldTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id){
+        return ResponseEntity.ok(productService.displayTailorSoldProduct(offset,pageSize,id));
+    }
+
+    @GetMapping("/product/search/{id}/{param}")
+    public ResponseEntity<List<ProductDto>> getSearchTailorProduct(@PathVariable Long id, @PathVariable String param){
+        return ResponseEntity.ok(productService.searchTailorProduct(id,param));
     }
 }

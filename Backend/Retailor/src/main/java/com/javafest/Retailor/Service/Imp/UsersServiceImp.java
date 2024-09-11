@@ -14,4 +14,11 @@ public class UsersServiceImp implements UsersService {
     public Users save(Users user) {
         return usersRepo.save(user);
     }
+
+    @Override
+    public Users getByEmail(String email) {
+        return usersRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
 }

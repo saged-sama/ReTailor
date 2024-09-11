@@ -5,4 +5,5 @@ import org.apache.catalina.User;
 
 public interface UsersService {
     public Users save(Users user);
+    public Users getByEmail(String email);
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class Tailor {
             inverseJoinColumns = @JoinColumn(name = "Product_id")
     )
     @JsonIgnore
-    private Set<Product> products;
+    private Set<Product> products= new HashSet<>();
     private String nationalId;
     private String tradeLicense;
     @CreationTimestamp
@@ -80,4 +81,14 @@ public class Tailor {
     @OneToOne
     @JoinColumn(name = "user_id")
     private Users users;
+
+    public void addProduct(Product product) {
+        this.products.add(product);
+        product.getTailors().add(this); // Sync with the inverse side
+    }
+
+    public void removeProduct(Product product) {
+        this.products.remove(product);
+        product.getTailors().remove(this); // Sync with the inverse side
+    }
 }

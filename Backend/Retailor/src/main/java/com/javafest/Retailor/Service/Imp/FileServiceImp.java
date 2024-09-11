@@ -54,4 +54,20 @@ public class FileServiceImp implements FileService {
 
         return Files.readAllBytes(resolvedPath);
     }
+    @Override
+    public void deleteFile(String fileName) throws IOException {
+        // Ensure the file name is relative and does not include "images/"
+        if (!fileName.startsWith(uploadDir)) {
+            fileName = uploadDir + fileName; // Prepend the directory path
+        }
+
+        Path filePath = Paths.get(fileName).normalize();
+
+        // Check if the file exists, then delete it
+        if (Files.exists(filePath)) {
+            Files.delete(filePath);  // Delete the file from the file system
+        } else {
+            throw new IOException("File not found to delete: " + fileName);
+        }
+    }
 }

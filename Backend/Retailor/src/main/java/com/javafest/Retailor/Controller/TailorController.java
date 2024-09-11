@@ -32,8 +32,6 @@ public class TailorController {
     private UsersRepo usersRepo;
     @Autowired
     private UsersService usersService;
-    @Autowired
-    private TailorRepo tailorRepo;
 
     @PostMapping("/tailor/save")
     public ResponseEntity<?> saveTailor(@ModelAttribute TailorDto tailorDto, @RequestHeader("Authorization") String authHeader) throws Exception {
@@ -80,8 +78,7 @@ public class TailorController {
     @PutMapping("/tailor/adminResponse")
     public ResponseEntity<TailorDto> updateTailorAdmin(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
-            Tailor tailor =tailorRepo.findById(tailorDto.getId())
-                    .orElseThrow(() -> new RuntimeException("Tailor not found"));
+            Tailor tailor =tailorService.getById(tailorDto.getId());
             //System.out.println(tailor.getTailorStatus());
             tailor.setName(tailorDto.getName());
             tailor.setBio(tailorDto.getBio());
@@ -117,8 +114,7 @@ public class TailorController {
     @PutMapping("/tailor/update")
     public ResponseEntity<TailorDto> updateTailor(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
-            Tailor tailor =tailorRepo.findById(tailorDto.getId())
-                    .orElseThrow(() -> new RuntimeException("Tailor not found"));
+            Tailor tailor =tailorService.getById(tailorDto.getId());
             //System.out.println(tailor.getTailorStatus());
             tailor.setName(tailorDto.getName());
             tailor.setBio(tailorDto.getBio());

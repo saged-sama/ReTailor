@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,12 +42,21 @@ public class Product {
     private Boolean isCustomizable;
     private Double basePrice;
     @ManyToMany(mappedBy = "products")
-    @JsonIgnore
-    private Set<Tailor> tailors;
+    private Set<Tailor> tailors=new HashSet<>();
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private Date soldAt;
     private Boolean availability;
+
+    public void addTailor(Tailor tailor) {
+        this.tailors.add(tailor);
+        tailor.getProducts().add(this); // Sync with the owning side
+    }
+
+    public void removeTailor(Tailor tailor) {
+        this.tailors.remove(tailor);
+        tailor.getProducts().remove(this); // Sync with the owning side
+    }
 }

@@ -1,7 +1,12 @@
 package com.javafest.Retailor.Controller;
 
+import com.javafest.Retailor.Dto.ProductDto;
+import com.javafest.Retailor.Entity.Product;
 import com.javafest.Retailor.Service.FileService;
+import com.javafest.Retailor.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +27,8 @@ public class HomeController {
 
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/images/test")
     public String helloController(){
@@ -53,5 +60,14 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/product/display/{offset}/{pageSize}")
+    public ResponseEntity<Page<ProductDto>> getAllProduct(@PathVariable int offset, @PathVariable int pageSize){
 
+        return ResponseEntity.ok(productService.displayProduct(offset,pageSize));
+    }
+
+    @GetMapping("/product/search/{offset}/{pageSize}/{param}")
+    public ResponseEntity<Page<ProductDto> > searchAllProduct(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
+        return ResponseEntity.ok(productService.searchProduct(offset,pageSize,param));
+    }
 }
