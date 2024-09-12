@@ -16,5 +16,4 @@ public interface TailorService {
     public Tailor getByUser(Users users);
 
     public Tailor getById(Long id);
-    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, Long id);
 }

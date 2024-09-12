@@ -1,6 +1,7 @@
 package com.javafest.Retailor.Controller;
 
 import com.javafest.Retailor.Config.JwtService;
+import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
 import com.javafest.Retailor.Entity.Tailor;
@@ -113,7 +114,15 @@ public class TailorProductController {
 
     @GetMapping("/product/display/{offset}/{pageSize}/{id}")
     public ResponseEntity<Page<ProductDto>> getTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id){
-        return ResponseEntity.ok(tailorService.displayTailorProduct(offset,pageSize,id));
+        return ResponseEntity.ok(productService.displayTailorProduct(offset,pageSize,id));
+    }
+    @GetMapping("/product/sortAsc/{offset}/{pageSize}/{id}/{param}")
+    public ResponseEntity<Page<ProductDto>> getTailorProductAsc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id,@PathVariable String param){
+        return ResponseEntity.ok(productService.displayTailorProductAsc(offset,pageSize,id,param));
+    }
+    @GetMapping("/product/sortDesc/{offset}/{pageSize}/{id}/{param}")
+    public ResponseEntity<Page<ProductDto>> getTailorProductDesc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id, @PathVariable String param){
+        return ResponseEntity.ok(productService.displayTailorProductDesc(offset,pageSize,id,param));
     }
 
     @GetMapping("/product/sold/{offset}/{pageSize}/{id}")
@@ -124,5 +133,25 @@ public class TailorProductController {
     @GetMapping("/product/search/{id}/{param}")
     public ResponseEntity<List<ProductDto>> getSearchTailorProduct(@PathVariable Long id, @PathVariable String param){
         return ResponseEntity.ok(productService.searchTailorProduct(id,param));
+    }
+
+    @GetMapping("/soldProduct/sortAsc/{offset}/{pageSize}/{id}/{param}")
+    public ResponseEntity<Page<ProductDto>> getSortedAscTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long id, @PathVariable String param){
+        return ResponseEntity.ok(productService.displayTailorSoldProductAsc(offset,pageSize,id,param));
+    }
+
+    @GetMapping("/soldProduct/sortDesc/{offset}/{pageSize}/{id}/{param}")
+    public ResponseEntity<Page<ProductDto>> getSortedDescTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long id, @PathVariable String param){
+        return ResponseEntity.ok(productService.displayTailorSoldProductDesc(offset,pageSize,id,param));
+    }
+
+    @GetMapping("/product/category/{id}/{category}")
+    public ResponseEntity<List<ProductDto>> getTailorProductByCategory(@PathVariable Long id, @PathVariable String category){
+        return ResponseEntity.ok(productService.getProductByCategory(id,category));
+    }
+
+    @GetMapping("/trendingProduct/{id}")
+    public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
     }
 }

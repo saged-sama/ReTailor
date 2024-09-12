@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/collections")
@@ -69,5 +70,20 @@ public class HomeController {
     @GetMapping("/product/search/{offset}/{pageSize}/{param}")
     public ResponseEntity<Page<ProductDto> > searchAllProduct(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
         return ResponseEntity.ok(productService.searchProduct(offset,pageSize,param));
+    }
+
+    @GetMapping("/product/sortAsc/{offset}/{pageSize}/{param}")
+    public ResponseEntity<Page<ProductDto> > sortAllProductAsc(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
+        return ResponseEntity.ok(productService.sortByParticularFieldAsc(offset,pageSize,param));
+    }
+
+    @GetMapping("/product/sortDesc/{offset}/{pageSize}/{param}")
+    public ResponseEntity<Page<ProductDto> > sortAllProductDesc(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
+        return ResponseEntity.ok(productService.sortByParticularFieldDesc(offset,pageSize,param));
+    }
+
+    @GetMapping("/product/category/{param}")
+    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable String param){
+        return ResponseEntity.ok(productService.allProductByCategory(param));
     }
 }

@@ -98,44 +98,4 @@ public class TailorServiceImp implements TailorService {
     public Tailor getById(Long id) {
         return tailorRepo.findById(id).orElseThrow(() -> new RuntimeException("Tailor not found"));
     }
-    @Override
-    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, Long id) {
-       Tailor tailor = getById(id);
-       List<ProductDto> productDtoList = tailor.getProducts().stream()
-                .filter(Product::getAvailability)  // Only include products where availability is true
-                .map(p -> {
-                    ProductDto productDto = new ProductDto();
-                    productDto.setId(p.getId());
-                    productDto.setName(p.getName());
-                    productDto.setAvailability(p.getAvailability());
-                    productDto.setDescription(p.getDescription());
-                    productDto.setCategory(p.getCategory());
-
-                    // Get the first image if available
-                    if (!p.getImages().isEmpty()) {
-                        productDto.setImage(p.getImages().get(0));
-                    }
-
-                    productDto.setBasePrice(p.getBasePrice());
-                    productDto.setCreatedAt(p.getCreatedAt());
-                    productDto.setIsCustomizable(p.getIsCustomizable());
-                    productDto.setUpdatedAt(p.getUpdatedAt());
-
-                    // Get the first tailor if available
-                    if (!p.getTailors().isEmpty()) {
-                        productDto.setTailors(p.getTailors().iterator().next());
-                    }
-
-                    productDto.setSoldAt(p.getSoldAt());
-                    return productDto;
-                })
-                .collect(Collectors.toList());
-
-        // Return the DTO list as a paginated result (PageImpl)
-        Pageable pageable = PageRequest.of(offset, pageSize);
-        int start = Math.min((int) pageable.getOffset(), productDtoList.size());
-        int end = Math.min((start + pageable.getPageSize()), productDtoList.size());
-
-        return new PageImpl<>(productDtoList.subList(start, end), pageable, productDtoList.size());
-    }
 }
