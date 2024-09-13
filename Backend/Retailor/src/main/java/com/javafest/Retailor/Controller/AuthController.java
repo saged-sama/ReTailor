@@ -75,7 +75,7 @@ public class AuthController {
             return new ResponseEntity<>("Could not upload the files.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        CustomerDto customerDto = customerService.save(customer);
+        CustomerDto customerDto = customerService.saveCustomer(customer);
 
         System.out.println(customerDto);
 

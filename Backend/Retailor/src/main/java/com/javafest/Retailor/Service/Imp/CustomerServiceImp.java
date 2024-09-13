@@ -2,6 +2,7 @@ package com.javafest.Retailor.Service.Imp;
 
 import com.javafest.Retailor.Dto.CustomerDto;
 import com.javafest.Retailor.Entity.Customer;
+import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Repository.CustomerRepo;
 import com.javafest.Retailor.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class CustomerServiceImp implements CustomerService {
     @Autowired
     private CustomerRepo customerRepo;
     @Override
-    public CustomerDto save(Customer customer) {
+    public CustomerDto saveCustomer(Customer customer) {
         Customer customer1= customerRepo.save(customer);
 
         CustomerDto customerDto = new CustomerDto();
@@ -51,5 +52,15 @@ public class CustomerServiceImp implements CustomerService {
         }
 
         return customerDto;
+    }
+
+    @Override
+    public Customer getByUsers(Users users) {
+        return customerRepo.findByUsers(users);
+    }
+
+    @Override
+    public Customer updateCustomer(Customer customer) {
+        return customerRepo.save(customer);
     }
 }

@@ -73,8 +73,10 @@ public class Tailor {
     @Column(name = "saree_design", length = 100)
     private List<String> sareeDesign;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tailor", cascade = CascadeType.ALL)
     private List<Orders> orders;
+    @JsonIgnore
     @OneToMany(mappedBy = "tailor", cascade = CascadeType.ALL)
     private List<TailoringOrder> tailoringOrders;
 

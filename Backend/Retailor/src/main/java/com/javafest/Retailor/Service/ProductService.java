@@ -26,4 +26,5 @@ public interface ProductService {
     public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, Long id,String sortKey);
     public List<ProductDto> getProductByCategory(Long id,String category);
     public List<ProductDto> allProductByCategory(String category);
+    public Product updateProduct(Product product);
 }

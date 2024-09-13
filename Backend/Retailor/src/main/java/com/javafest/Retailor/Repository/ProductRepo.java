@@ -32,5 +32,5 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
             "GROUP BY p.category " +
             "ORDER BY totalSales DESC",
             nativeQuery = true)
-    List<Object[]> findCategorySalesInLastMonthByTailor(@Param("tailorId") Long tailorId);
+    public List<Object[]> findCategorySalesInLastMonthByTailor(@Param("tailorId") Long tailorId);
 }

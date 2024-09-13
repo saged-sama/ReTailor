@@ -43,9 +43,10 @@ public class Customer {
     @JsonIgnore
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<ReviewAndRating> reviewAndRatingList;
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Orders>orders;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<TailoringOrder>tailoringOrders;
 }

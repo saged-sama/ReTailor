@@ -495,5 +495,10 @@ public class ProductServiceImp implements ProductService {
         }).toList();
     }
 
+    @Override
+    public Product updateProduct(Product product) {
+        return productRepo.save(product);
+    }
+
 
 }
