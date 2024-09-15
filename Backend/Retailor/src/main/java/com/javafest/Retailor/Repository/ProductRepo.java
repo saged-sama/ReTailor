@@ -16,14 +16,14 @@ import java.util.Optional;
 public interface ProductRepo extends JpaRepository<Product, Long> {
     public Optional<Product> findById(Long id);
     public void deleteById(Long id);
-    public Page<Product> findAllByAvailability(PageRequest pageRequest, Boolean available);
-    public Page<Product> findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(PageRequest pageRequest,String param,String parameter);
-    public Page<Product> findByTailorsIdAndAvailability(PageRequest pageRequest,Long Id, Boolean available);
+    public Page<Product> findAllByTotalCountGreaterThan(PageRequest pageRequest, int totalCount);
+    public Page<Product> findByTotalCountGreaterThanAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(PageRequest pageRequest,int totalCount,String param,String parameter);
+    public Page<Product> findByTailorsIdAndTotalCountGreaterThan(PageRequest pageRequest,Long Id, int totalCount);
     public Page<Product> findByTailorsIdAndSoldAtIsNotNull(PageRequest pageRequest, Long id);
-    public List<Product> findByTailorsIdAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(Long id,String param, String parameter);
-    public List<Product> findByTailorsIdAndCategoryAndAvailability(Long id, String param, Boolean available);
-    public List<Product> findByCategoryAndAvailability(String category, Boolean available);
-    @Query(value = "SELECT p.category AS category, COUNT(p.id) AS totalSales " +
+    public List<Product> findByTailorsIdAndTotalCountGreaterThanAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(Long id,int totalCount,String param, String parameter);
+    public List<Product> findByTailorsIdAndCategoryAndTotalCountGreaterThan(Long id, String param, int totalCount);
+    public List<Product> findByCategoryAndTotalCountGreaterThan(String category, int totalCount);
+    @Query(value = "SELECT p.category AS category, SUM(p.sold_count) AS totalSales " +
             "FROM Product p " +
             "JOIN Tailor_Product tp ON p.id = tp.product_id " +
             "WHERE tp.tailor_id = :tailorId " +

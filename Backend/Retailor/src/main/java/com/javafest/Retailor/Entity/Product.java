@@ -47,8 +47,13 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ProductSize> sizes;
     private Date soldAt;
-    private Boolean availability;
+    @Version
+    private int version;
+    private int totalCount;
+    private int soldCount;
 
     public void addTailor(Tailor tailor) {
         this.tailors.add(tailor);

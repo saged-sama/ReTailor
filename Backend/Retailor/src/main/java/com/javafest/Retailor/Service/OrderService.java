@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
     public Orders createOrder(Orders orders);
-    public Orders updateOrders(Orders orders);
+    public Orders updateOrders(Long id);
     public List<Orders> getAllOrders();
     public List<Orders> getAllPendingOrdersByTailors(Long tailorId);
     public List<Orders> getAllAcceptedOrdersByTailors(Long tailorId);
@@ -15,5 +15,5 @@ public interface OrderService {
     public List<Orders> getAllAcceptedOrdersByCustomer(Long customerId);
     public Page<Orders> getAllCompletedOrdersByTailors(int offset,int pageSize,Long tailorId);
     public Page<Orders> getAllCompletedOrdersByCustomer(int offset,int pageSize,Long customerId);
-    public String deleteCancelledProduct();
+    public String deleteCancelledProduct(Long id);
 }

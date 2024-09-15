@@ -29,10 +29,10 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "tailorId")
     private Tailor tailor;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
-
+    private String size;
     private Integer quantity;
     private Double price;
     private String destinationAddress;

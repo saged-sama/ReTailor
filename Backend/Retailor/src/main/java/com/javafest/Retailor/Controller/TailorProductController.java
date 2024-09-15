@@ -4,13 +4,11 @@ import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Repository.UsersRepo;
-import com.javafest.Retailor.Service.FileService;
-import com.javafest.Retailor.Service.ProductService;
-import com.javafest.Retailor.Service.TailorService;
-import com.javafest.Retailor.Service.UsersService;
+import com.javafest.Retailor.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -38,6 +36,8 @@ public class TailorProductController {
     private UsersService usersService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ProductSizeService productSizeService;
 
     @PostMapping("/product/save")
     public ResponseEntity<Product> saveProduct(@ModelAttribute Product product,
@@ -61,6 +61,14 @@ public class TailorProductController {
         for (Tailor t : tailorSet) {
             product.addTailor(t);// This ensures that the product is added to the tailor as well
         }
+        product.setSoldCount(0);
+        int ct=0;
+        for (ProductSize p: product.getSizes()){
+            ct+=p.getQuantity();
+            p.setProduct(product);
+        }
+        product.setTotalCount(ct);
+
         //System.out.println(product.getTailors());
         product.setImages(Images);
         try {
@@ -80,7 +88,6 @@ public class TailorProductController {
         Product product1 = productService.getById(product.getId());
         product1.setName(product1.getName());
         product1.setDescription(product.getDescription());
-        product1.setAvailability(product.getAvailability());
         product1.setCategory(product.getCategory());
         product1.setSoldAt(product.getSoldAt());
         for(var image: product1.getImages()){
@@ -153,5 +160,10 @@ public class TailorProductController {
     @GetMapping("/trendingProduct/{id}")
     public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable Long id){
         return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
+    }
+
+    @GetMapping("/productSize/{id}")
+    public ResponseEntity<List<ProductSize>> getProductSizes(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductSizeForAProduct(id));
     }
 }

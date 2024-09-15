@@ -3,6 +3,7 @@ package com.javafest.Retailor.Service;
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 
@@ -27,4 +28,5 @@ public interface ProductService {
     public List<ProductDto> getProductByCategory(Long id,String category);
     public List<ProductDto> allProductByCategory(String category);
     public Product updateProduct(Product product);
+    public List<ProductSize> getProductSizeForAProduct(Long id);
 }

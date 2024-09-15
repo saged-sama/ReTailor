@@ -3,6 +3,7 @@ package com.javafest.Retailor.Service.Imp;
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
 import com.javafest.Retailor.Repository.ProductRepo;
 import com.javafest.Retailor.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +37,11 @@ public class ProductServiceImp implements ProductService {
         return "Successfully Deleted";
     }
 
-    @Override
-    public Page<ProductDto> displayProduct(int offset, int pageSize) {
-        Page<Product> products = productRepo.findAllByAvailability(PageRequest.of(offset, pageSize),true);
+    private Page<ProductDto> helpToGetPage(int offset, int pageSize,Page<Product> products){
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
             productDto.setId(p.getId());
             productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
             productDto.setDescription(p.getDescription());
             productDto.setCategory(p.getCategory());
 
@@ -56,6 +54,9 @@ public class ProductServiceImp implements ProductService {
             productDto.setCreatedAt(p.getCreatedAt());
             productDto.setIsCustomizable(p.getIsCustomizable());
             productDto.setUpdatedAt(p.getUpdatedAt());
+            productDto.setTotalCount(p.getTotalCount());
+            productDto.setSizes(p.getSizes());
+            productDto.setSoldCount(p.getSoldCount());
 
             // Get the first tailor, if available
             if (!p.getTailors().isEmpty()) {
@@ -69,111 +70,61 @@ public class ProductServiceImp implements ProductService {
 
         // Return the DTO list as a Page
         return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+    }
+
+    private List<ProductDto> helpToGetList(List<Product> products){
+        return products.stream().map(p -> {
+            ProductDto productDto = new ProductDto();
+            productDto.setId(p.getId());
+            productDto.setName(p.getName());
+            productDto.setDescription(p.getDescription());
+            productDto.setCategory(p.getCategory());
+
+            // Get the first image, if available
+            if (!p.getImages().isEmpty()) {
+                productDto.setImage(p.getImages().get(0));
+            }
+
+            productDto.setBasePrice(p.getBasePrice());
+            productDto.setCreatedAt(p.getCreatedAt());
+            productDto.setIsCustomizable(p.getIsCustomizable());
+            productDto.setUpdatedAt(p.getUpdatedAt());
+            productDto.setTotalCount(p.getTotalCount());
+            productDto.setSizes(p.getSizes());
+            productDto.setSoldCount(p.getSoldCount());
+            // Get the first tailor, if available
+            if (!p.getTailors().isEmpty()) {
+                productDto.setTailors(p.getTailors().iterator().next());
+            }
+
+            productDto.setSoldAt(p.getSoldAt());
+
+            return productDto;
+        }).toList();
+    }
+
+    @Override
+    public Page<ProductDto> displayProduct(int offset, int pageSize) {
+        Page<Product> products = productRepo.findAllByTotalCountGreaterThan(PageRequest.of(offset, pageSize),0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> searchProduct(int offset, int pageSize,String parameter) {
-        Page<Product> products= productRepo.findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(PageRequest.of(offset,pageSize),parameter,parameter);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findByTotalCountGreaterThanAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(PageRequest.of(offset,pageSize),0,parameter,parameter);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorProduct(int offset, int pageSize, Long id) {
-        Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize),id,true);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize),id,0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorSoldProduct(int offset, int pageSize,Long id) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize),id);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
@@ -191,313 +142,68 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public List<ProductDto> searchTailorProduct(Long id,String parameter) {
-        List<Product> products= productRepo.findByTailorsIdAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(id,parameter,parameter);
-        return products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).toList();
+        List<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThanAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(id,0,parameter,parameter);
+        return helpToGetList(products);
     }
 
     @Override
     public Page<ProductDto> sortByParticularFieldAsc(int offset, int pageSize,String fieldName) {
-        Page<Product> products= productRepo.findAllByAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,fieldName),true);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findAllByTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,fieldName),0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> sortByParticularFieldDesc(int offset, int pageSize,String fieldName) {
-        Page<Product> products= productRepo.findAllByAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,fieldName),true);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findAllByTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,fieldName),0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorSoldProductAsc(int offset, int pageSize, Long id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorSoldProductDesc(int offset, int pageSize, Long id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorProductAsc(int offset, int pageSize, Long id, String sortKey) {
-        Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id,true);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id,0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, Long id, String sortKey) {
-        Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,sortKey),id,true);
-        List<ProductDto> productDtoList = products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).collect(Collectors.toList());
-
-        // Return the DTO list as a Page
-        return new PageImpl<>(productDtoList, PageRequest.of(offset, pageSize), products.getTotalElements());
+        Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,sortKey),id,0);
+        return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
     public List<ProductDto> getProductByCategory(Long id,String category) {
-        List<Product> products= productRepo.findByTailorsIdAndCategoryAndAvailability(id,category,true);
-        return products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).toList();
+        List<Product> products= productRepo.findByTailorsIdAndCategoryAndTotalCountGreaterThan(id,category,0);
+        return helpToGetList(products);
     }
 
     @Override
     public List<ProductDto> allProductByCategory(String category) {
-        List<Product> products= productRepo.findByCategoryAndAvailability(category,true);
-        return products.stream().map(p -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setName(p.getName());
-            productDto.setAvailability(p.getAvailability());
-            productDto.setDescription(p.getDescription());
-            productDto.setCategory(p.getCategory());
-
-            // Get the first image, if available
-            if (!p.getImages().isEmpty()) {
-                productDto.setImage(p.getImages().get(0));
-            }
-
-            productDto.setBasePrice(p.getBasePrice());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setIsCustomizable(p.getIsCustomizable());
-            productDto.setUpdatedAt(p.getUpdatedAt());
-
-            // Get the first tailor, if available
-            if (!p.getTailors().isEmpty()) {
-                productDto.setTailors(p.getTailors().iterator().next());
-            }
-
-            productDto.setSoldAt(p.getSoldAt());
-
-            return productDto;
-        }).toList();
+        List<Product> products= productRepo.findByCategoryAndTotalCountGreaterThan(category,0);
+        return helpToGetList(products);
     }
 
     @Override
     public Product updateProduct(Product product) {
+
         return productRepo.save(product);
+    }
+
+    @Override
+    public List<ProductSize> getProductSizeForAProduct(Long id) {
+        Product product= productRepo.findById(id).orElseThrow(() -> new RuntimeException("No Product Found!"));
+        return product.getSizes();
     }
 
 
