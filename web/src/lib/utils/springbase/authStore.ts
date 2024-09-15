@@ -2,19 +2,19 @@ import { jwtDecode } from 'jwt-decode';
 
 export default class AuthStore {
     public token: string | undefined;
-    public model: Object | undefined;
+    public model: any | undefined;
     public isValid: boolean = false;
     public isAdmin: boolean = false;
 
     constructor() {
-        const springbase_auth = localStorage.getItem('springbase_auth');
-        if (springbase_auth) {
-            const auth = JSON.parse(springbase_auth);
-            this.token = auth.token;
-            this.model = auth.model;
-            this.isValid = true;
-            this.isAdmin = auth.model.role === 'ADMIN';
-        }
+        // const springbase_auth = localStorage.getItem('springbase_auth');
+        // if (springbase_auth) {
+            // const auth = JSON.parse(springbase_auth);
+            this.token = ""
+            this.model = {}
+            this.isValid = false;
+            this.isAdmin = false;
+        // }
     }
 
     loadFromCookie(cookie: string) {

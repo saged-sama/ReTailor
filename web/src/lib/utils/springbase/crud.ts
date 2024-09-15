@@ -18,11 +18,14 @@ export default function crud(incomingHeaders?: {[key: string]: string}){
         }
     }
     
-    async function POST(url: string, body: any){
+    async function POST(url: string, body: Object | FormData){
+        const reqBody = body instanceof FormData ? body : JSON.stringify(body);
+        const reqHeaders = body instanceof FormData ? {} : headers;
+
         const response = await fetch(url, {
             method: "POST",
-            headers: headers,
-            body: JSON.stringify(body)
+            headers: reqHeaders,
+            body: reqBody
         });
     
         if(response.ok){

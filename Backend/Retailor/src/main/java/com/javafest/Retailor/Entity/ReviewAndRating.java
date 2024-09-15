@@ -1,13 +1,16 @@
 package com.javafest.Retailor.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.context.LifecycleAutoConfiguration;
-
-import java.util.List;
 
 @Entity
 @Setter
@@ -16,8 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ReviewAndRating {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String Id;
     @ManyToOne
     @JoinColumn(name= "tailorId")
     private Tailor tailorList;

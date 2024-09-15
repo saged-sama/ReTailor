@@ -1,29 +1,36 @@
 package com.javafest.Retailor.Controller;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
-import com.javafest.Retailor.Repository.UsersRepo;
 import com.javafest.Retailor.Service.FileService;
 import com.javafest.Retailor.Service.ProductService;
 import com.javafest.Retailor.Service.TailorService;
 import com.javafest.Retailor.Service.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/collections/tailor")
@@ -101,7 +108,7 @@ public class TailorProductController {
         }
     }
     @DeleteMapping("/product/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) throws IOException {
+    public String deleteProduct(@PathVariable String id) throws IOException {
         Product product = productService.getById(id);
         for(var image: product.getImages()){
             fileService.deleteFile(image);
@@ -113,45 +120,45 @@ public class TailorProductController {
     }
 
     @GetMapping("/product/display/{offset}/{pageSize}/{id}")
-    public ResponseEntity<Page<ProductDto>> getTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id){
+    public ResponseEntity<Page<ProductDto>> getTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id){
         return ResponseEntity.ok(productService.displayTailorProduct(offset,pageSize,id));
     }
     @GetMapping("/product/sortAsc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getTailorProductAsc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id,@PathVariable String param){
+    public ResponseEntity<Page<ProductDto>> getTailorProductAsc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id,@PathVariable String param){
         return ResponseEntity.ok(productService.displayTailorProductAsc(offset,pageSize,id,param));
     }
     @GetMapping("/product/sortDesc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getTailorProductDesc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id, @PathVariable String param){
+    public ResponseEntity<Page<ProductDto>> getTailorProductDesc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id, @PathVariable String param){
         return ResponseEntity.ok(productService.displayTailorProductDesc(offset,pageSize,id,param));
     }
 
     @GetMapping("/product/sold/{offset}/{pageSize}/{id}")
-    public ResponseEntity<Page<ProductDto>> getSoldTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable Long id){
+    public ResponseEntity<Page<ProductDto>> getSoldTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id){
         return ResponseEntity.ok(productService.displayTailorSoldProduct(offset,pageSize,id));
     }
 
     @GetMapping("/product/search/{id}/{param}")
-    public ResponseEntity<List<ProductDto>> getSearchTailorProduct(@PathVariable Long id, @PathVariable String param){
+    public ResponseEntity<List<ProductDto>> getSearchTailorProduct(@PathVariable String id, @PathVariable String param){
         return ResponseEntity.ok(productService.searchTailorProduct(id,param));
     }
 
     @GetMapping("/soldProduct/sortAsc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getSortedAscTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long id, @PathVariable String param){
+    public ResponseEntity<Page<ProductDto>> getSortedAscTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String id, @PathVariable String param){
         return ResponseEntity.ok(productService.displayTailorSoldProductAsc(offset,pageSize,id,param));
     }
 
     @GetMapping("/soldProduct/sortDesc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getSortedDescTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long id, @PathVariable String param){
+    public ResponseEntity<Page<ProductDto>> getSortedDescTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String id, @PathVariable String param){
         return ResponseEntity.ok(productService.displayTailorSoldProductDesc(offset,pageSize,id,param));
     }
 
     @GetMapping("/product/category/{id}/{category}")
-    public ResponseEntity<List<ProductDto>> getTailorProductByCategory(@PathVariable Long id, @PathVariable String category){
+    public ResponseEntity<List<ProductDto>> getTailorProductByCategory(@PathVariable String id, @PathVariable String category){
         return ResponseEntity.ok(productService.getProductByCategory(id,category));
     }
 
     @GetMapping("/trendingProduct/{id}")
-    public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable Long id){
+    public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable String id){
         return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
     }
 }

@@ -1,15 +1,16 @@
 package com.javafest.Retailor.Service.Imp;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
+
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.AuthenticationResponse;
 import com.javafest.Retailor.Dto.LoginReq;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Repository.UsersRepo;
 import com.javafest.Retailor.Service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImp implements AuthService {

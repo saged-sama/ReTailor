@@ -1,20 +1,20 @@
 package com.javafest.Retailor.Service.Imp;
 
-import com.javafest.Retailor.Dto.CategorySalesDto;
-import com.javafest.Retailor.Dto.ProductDto;
-import com.javafest.Retailor.Entity.Product;
-import com.javafest.Retailor.Repository.ProductRepo;
-import com.javafest.Retailor.Service.ProductService;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.javafest.Retailor.Dto.CategorySalesDto;
+import com.javafest.Retailor.Dto.ProductDto;
+import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Repository.ProductRepo;
+import com.javafest.Retailor.Service.ProductService;
 
 @Service
 public class ProductServiceImp implements ProductService {
@@ -26,12 +26,12 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Product getById(Long id) {
+    public Product getById(String id) {
         return productRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     @Override
-    public String deleteProductById(Long id) {
+    public String deleteProductById(String id) {
         productRepo.deleteById(id);
         return "Successfully Deleted";
     }
@@ -107,7 +107,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, Long id) {
+    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, String id) {
         Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize),id,true);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -142,7 +142,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProduct(int offset, int pageSize,Long id) {
+    public Page<ProductDto> displayTailorSoldProduct(int offset, int pageSize,String id) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize),id);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -177,7 +177,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<CategorySalesDto> getCategorySalesInLastMonthByTailor(Long tailorId) {
+    public List<CategorySalesDto> getCategorySalesInLastMonthByTailor(String tailorId) {
         List<Object[]> results = productRepo.findCategorySalesInLastMonthByTailor(tailorId);
 
         return results.stream()
@@ -190,7 +190,7 @@ public class ProductServiceImp implements ProductService {
 
 
     @Override
-    public List<ProductDto> searchTailorProduct(Long id,String parameter) {
+    public List<ProductDto> searchTailorProduct(String id,String parameter) {
         List<Product> products= productRepo.findByTailorsIdAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(id,parameter,parameter);
         return products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -292,7 +292,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProductAsc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorSoldProductAsc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -327,7 +327,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProductDesc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorSoldProductDesc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -362,7 +362,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorProductAsc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorProductAsc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id,true);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -397,7 +397,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndAvailability(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,sortKey),id,true);
         List<ProductDto> productDtoList = products.stream().map(p -> {
             ProductDto productDto = new ProductDto();
@@ -432,7 +432,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProductByCategory(Long id,String category) {
+    public List<ProductDto> getProductByCategory(String id,String category) {
         List<Product> products= productRepo.findByTailorsIdAndCategoryAndAvailability(id,category,true);
         return products.stream().map(p -> {
             ProductDto productDto = new ProductDto();

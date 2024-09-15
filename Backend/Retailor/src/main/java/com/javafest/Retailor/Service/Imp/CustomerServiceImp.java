@@ -1,14 +1,15 @@
 package com.javafest.Retailor.Service.Imp;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.javafest.Retailor.Dto.CustomerDto;
 import com.javafest.Retailor.Entity.Customer;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Repository.CustomerRepo;
 import com.javafest.Retailor.Service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class CustomerServiceImp implements CustomerService {
@@ -34,7 +35,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public CustomerDto findByCustomerId(Long Id) {
+    public CustomerDto findByCustomerId(String Id) {
         Optional <Customer> customer = customerRepo.findById(Id);
         CustomerDto customerDto = new CustomerDto();
 

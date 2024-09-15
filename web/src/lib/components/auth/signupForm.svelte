@@ -1,10 +1,72 @@
 <script lang="ts">
     import FormInput from "./formInput.svelte";
     import Title from "../navbar/title.svelte";
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
     import { goto } from "$app/navigation";
+    import { ImageUp } from "lucide-svelte";
 
     let isChecked: boolean = false;
+    let avatar: File | null = null;
+    let avatarPreview: string | null = null;
+
+    const handleFileChange = (e: Event) => {
+        const input = e.target as HTMLInputElement;
+        avatar = input.files?.[0] || null;
+        if (avatar) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                avatarPreview = reader.result as string;
+            };
+            reader.readAsDataURL(avatar);
+        }
+    };
+
+    const isFormFilled = (data: any) => {
+        if (
+            data.firstName === "" ||
+            data.lastName === "" ||
+            data.email === "" ||
+            data.phone === "" ||
+            data.password === "" ||
+            data.passwordConfirm === ""
+        ) {
+            return false;
+        }
+        return true;
+    };
+
+    const isEmailUsed = async (email: string) => {
+        console.log(email);
+        const r = await springbase.collection("users").getList(1, 1, {
+            filter: `email = "${email}"`
+        })
+
+        console.log(r.content.length);
+
+        if(r.content.length > 0) {
+            return true;
+        }
+        return false;
+    };
+
+    const isDataValid = async (data: any) => {
+        if (!isFormFilled(data)) {
+            alert("Please fill all the fields");
+            return false;
+        }
+
+        if (data.password !== data.passwordConfirm) {
+            alert("Passwords do not match");
+            return false;
+        }
+
+        if ((await isEmailUsed(data.email)) === true) {
+            alert("Email already in use");
+            return false;
+        }
+
+        return true;
+    };
 
     const handleSubmit = async (e: Event) => {
         let record: any = null;
@@ -12,41 +74,18 @@
             e.preventDefault();
             const form = e.target as HTMLFormElement;
             const formData = new FormData(form);
-            formData.append("role", "CUSTOMER");
             const data = Object.fromEntries(formData.entries());
 
-            if (
-                data.firstName === "" ||
-                data.lastName === "" ||
-                data.email === "" ||
-                data.phone === "" ||
-                data.password === "" ||
-                data.passwordConfirm === ""
-            ) {
-                alert("All of the fields are required");
+            if (!(await isDataValid(data))) {
                 return;
             }
 
-            if (
-                await pocketbase.collection("users").getList(1, 1, {
-                    filter: `email = "${data.email.toString()}"`,
-                })
-            ) {
-                alert("An account with this email already exists");
-                return;
-            }
-
-            if (data.password !== data.passwordConfirm) {
-                alert("Passwords do not match");
-                return;
-            }
-
-            record = await pocketbase.collection("users").create(data);
+            record = await springbase.collection("users").create(formData);
         } catch (err) {
             console.error("Error signing up: ", err);
         }
 
-        if (record.created) {
+        if (record) {
             goto("/auth/login");
         } else {
             alert("Something went wrong");
@@ -57,17 +96,6 @@
 <div
     class="flex flex-col items-center justify-center gap-5 shadow-2xl p-5 bg-primary-content rounded-lg"
 >
-    <div>
-        <Title />
-        <div class="text-sm">Sign up to Get Your Favorite Design Realized</div>
-    </div>
-
-    <!-- <button class="btn w-full">
-        Continue with Google <Mails />
-    </button>
-
-    <hr class="w-full"> -->
-
     <div class="flex flex-col items-center">
         <h1 class="text-xl font-bold font-bona-nova-sc text-primary">
             Sign Up
@@ -80,8 +108,20 @@
 
     <form
         class="flex flex-col items-center justify-center gap-3"
-        on:submit={handleSubmit}
+        on:submit|preventDefault={handleSubmit}
     >
+        <label for="avatar" class="flex flex-col items-center justify-center gap-1">
+            {#if avatar}
+                <img src={avatarPreview} alt="User Avatar" class="w-20 h-20 rounded-full">
+            {:else}
+                <div class="border border-gray-500 p-3 rounded-full">
+                    <ImageUp class="w-10 h-10"/>
+                </div>
+            {/if}
+            <div class="bg-base-100 px-3 py-2 rounded-lg text-xs">Upload Avatar</div>
+            <input type="file" accept="images/*" name="avatar" id="avatar" on:change={handleFileChange} class="hidden">
+        </label>
+
         <div class="flex gap-3">
             <FormInput
                 caption="First Name"

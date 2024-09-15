@@ -38,32 +38,32 @@ public class OrdersServiceImp implements OrderService {
     }
 
     @Override
-    public List<Orders> getAllPendingOrdersByTailors(Long tailorId) {
+    public List<Orders> getAllPendingOrdersByTailors(String tailorId) {
         return orderRepo.findByTailorIdAndOrderStatus(tailorId, OrderStatus.PENDING);
     }
 
     @Override
-    public List<Orders> getAllAcceptedOrdersByTailors(Long tailorId) {
+    public List<Orders> getAllAcceptedOrdersByTailors(String tailorId) {
         return orderRepo.findByTailorIdAndOrderStatus(tailorId, OrderStatus.ACCEPTED);
     }
 
     @Override
-    public List<Orders> getAllPendingOrdersByCustomer(Long customerId) {
+    public List<Orders> getAllPendingOrdersByCustomer(String customerId) {
         return orderRepo.findByCustomerIdAndOrderStatus(customerId, OrderStatus.PENDING);
     }
 
     @Override
-    public List<Orders> getAllAcceptedOrdersByCustomer(Long customerId) {
+    public List<Orders> getAllAcceptedOrdersByCustomer(String customerId) {
         return orderRepo.findByCustomerIdAndOrderStatus(customerId, OrderStatus.ACCEPTED);
     }
 
     @Override
-    public Page<Orders> getAllCompletedOrdersByTailors(int offset,int pageSize,Long tailorId) {
+    public Page<Orders> getAllCompletedOrdersByTailors(int offset,int pageSize,String tailorId) {
         return orderRepo.findByTailorIdAndOrderStatus(PageRequest.of(offset,pageSize),tailorId,OrderStatus.COMPLETED);
     }
 
     @Override
-    public Page<Orders> getAllCompletedOrdersByCustomer(int offset,int pageSize,Long customerId) {
+    public Page<Orders> getAllCompletedOrdersByCustomer(int offset,int pageSize,String customerId) {
         return orderRepo.findByCustomerIdAndOrderStatus(PageRequest.of(offset,pageSize),customerId,OrderStatus.COMPLETED);
     }
 
