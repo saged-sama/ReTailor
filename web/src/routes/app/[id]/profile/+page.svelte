@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
     import { onMount } from "svelte";
     import { page } from "$app/stores";
     import BasicInfo from "$lib/components/profile/basicInfo.svelte";
@@ -8,7 +8,7 @@
     let user: any = undefined;
 
     onMount(async () => {
-        user = await pocketbase.collection("users").getOne($page.params.id);
+        user = await springbase.collection("users").getOne($page.params.id);
     });
 </script>
 

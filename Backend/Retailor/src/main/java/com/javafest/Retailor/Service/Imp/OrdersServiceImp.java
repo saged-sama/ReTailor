@@ -2,33 +2,46 @@ package com.javafest.Retailor.Service.Imp;
 
 import com.javafest.Retailor.Entity.Orders;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
 import com.javafest.Retailor.Enum.OrderStatus;
 import com.javafest.Retailor.Repository.OrderRepo;
 import com.javafest.Retailor.Service.OrderService;
+import com.javafest.Retailor.Service.ProductService;
+import com.javafest.Retailor.Service.ProductSizeService;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrdersServiceImp implements OrderService {
 
     @Autowired
     private OrderRepo orderRepo;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductSizeService productSizeService;
     @Override
     public Orders createOrder(Orders orders) {
         return orderRepo.save(orders);
     }
 
     @Override
-    public Orders updateOrders(Orders updatedOrders) {
-        Orders orders= orderRepo.findById(updatedOrders.getId()).orElseThrow();
-        orders.setOrderStatus(updatedOrders.getOrderStatus());
-        orders.setDestinationAddress(updatedOrders.getDestinationAddress());
-        orders.setQuantity(updatedOrders.getQuantity());
-
+    @Transactional
+    public Orders updateOrders(String id) {
+        Orders orders= orderRepo.findById(id).orElseThrow();
+        orders.setOrderStatus(OrderStatus.COMPLETED);
+        int ct= orders.getProduct().getSoldCount();
+        Product product=orders.getProduct();
+        product.setSoldCount(ct+ orders.getQuantity());
+        product.setSoldAt(Date.valueOf(LocalDate.now()));
+        product.setTotalCount(product.getTotalCount()-orders.getQuantity());
+        productService.save(product);
         return orderRepo.save(orders);
     }
 
@@ -68,7 +81,13 @@ public class OrdersServiceImp implements OrderService {
     }
 
     @Override
-    public String deleteCancelledProduct() {
+    public String deleteCancelledProduct(String id) {
+        List<Orders> orders=orderRepo.findByTailorIdAndOrderStatus(id,OrderStatus.CANCELLED);
+        for(Orders orders1 : orders){
+            ProductSize productSize= productSizeService.getProductSizeByProductIdAndSize(orders1.getProduct().getId(), orders1.getSize());
+            productSize.setQuantity(productSize.getQuantity()+ orders1.getQuantity());
+            productSizeService.saveProductSize(productSize);
+        }
         orderRepo.deleteByOrderStatus(OrderStatus.CANCELLED);
         return "Successfully Deleted";
     }

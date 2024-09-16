@@ -1,7 +1,7 @@
 <script lang="ts">
     import Product from "$lib/components/store/product.svelte";
     import Sidebar from "$lib/components/store/sidebar/sidebar.svelte";
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
     import { Logs } from "lucide-svelte";
     import { onMount } from "svelte";
 
@@ -10,7 +10,7 @@
 
     const fetchProducts = async (lower: number, upper: number) => {
         try {
-            const newproducts = await pocketbase.collection("productView").getList(lower, upper);
+            const newproducts = await springbase.collection("productView").getList(lower, upper);
             products = [...products, ...newproducts.items];
         } catch (err) {
             console.error("Could not fetch products: ", err);

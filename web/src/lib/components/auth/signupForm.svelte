@@ -1,6 +1,5 @@
 <script lang="ts">
     import FormInput from "./formInput.svelte";
-    import Title from "../navbar/title.svelte";
     import { springbase } from "$lib/utils/springbase";
     import { goto } from "$app/navigation";
     import { ImageUp } from "lucide-svelte";

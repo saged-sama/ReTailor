@@ -1,12 +1,11 @@
 package com.javafest.Retailor.Service;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
+import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
     public Product save(Product product);
@@ -27,4 +26,5 @@ public interface ProductService {
     public List<ProductDto> getProductByCategory(String id,String category);
     public List<ProductDto> allProductByCategory(String category);
     public Product updateProduct(Product product);
+    public List<ProductSize> getProductSizeForAProduct(String id);
 }

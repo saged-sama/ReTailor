@@ -1,36 +1,23 @@
 package com.javafest.Retailor.Controller;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.CategorySalesDto;
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
-import com.javafest.Retailor.Service.FileService;
-import com.javafest.Retailor.Service.ProductService;
-import com.javafest.Retailor.Service.TailorService;
-import com.javafest.Retailor.Service.UsersService;
+import com.javafest.Retailor.Service.*;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/collections/tailor")
@@ -45,6 +32,8 @@ public class TailorProductController {
     private UsersService usersService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ProductSizeService productSizeService;
 
     @PostMapping("/product/save")
     public ResponseEntity<Product> saveProduct(@ModelAttribute Product product,
@@ -68,6 +57,14 @@ public class TailorProductController {
         for (Tailor t : tailorSet) {
             product.addTailor(t);// This ensures that the product is added to the tailor as well
         }
+        product.setSoldCount(0);
+        int ct=0;
+        for (ProductSize p: product.getSizes()){
+            ct+=p.getQuantity();
+            p.setProduct(product);
+        }
+        product.setTotalCount(ct);
+
         //System.out.println(product.getTailors());
         product.setImages(Images);
         try {
@@ -87,7 +84,6 @@ public class TailorProductController {
         Product product1 = productService.getById(product.getId());
         product1.setName(product1.getName());
         product1.setDescription(product.getDescription());
-        product1.setAvailability(product.getAvailability());
         product1.setCategory(product.getCategory());
         product1.setSoldAt(product.getSoldAt());
         for(var image: product1.getImages()){
@@ -160,5 +156,10 @@ public class TailorProductController {
     @GetMapping("/trendingProduct/{id}")
     public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable String id){
         return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
+    }
+
+    @GetMapping("/productSize/{id}")
+    public ResponseEntity<List<ProductSize>> getProductSizes(@PathVariable String id){
+        return ResponseEntity.ok(productService.getProductSizeForAProduct(id));
     }
 }

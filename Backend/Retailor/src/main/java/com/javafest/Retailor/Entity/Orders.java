@@ -1,26 +1,15 @@
 package com.javafest.Retailor.Entity;
 
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.javafest.Retailor.Enum.OrderStatus;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Setter
@@ -38,10 +27,10 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "tailorId")
     private Tailor tailor;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
-
+    private String size;
     private Integer quantity;
     private Double price;
     private String destinationAddress;

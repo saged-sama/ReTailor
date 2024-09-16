@@ -1,34 +1,28 @@
 package com.javafest.Retailor.Controller;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.TailorDto;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.Role;
 import com.javafest.Retailor.Enum.TailorStatus;
+import com.javafest.Retailor.Repository.TailorRepo;
 import com.javafest.Retailor.Repository.UsersRepo;
 import com.javafest.Retailor.Service.TailorService;
 import com.javafest.Retailor.Service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/api/collections")
+@RequestMapping("/api/collections/tailors")
 public class TailorController {
     @Autowired
     private TailorService tailorService;
@@ -39,7 +33,7 @@ public class TailorController {
     @Autowired
     private UsersService usersService;
 
-    @PostMapping("/tailor/save")
+    @PostMapping("/")
     public ResponseEntity<?> saveTailor(@ModelAttribute TailorDto tailorDto, @RequestHeader("Authorization") String authHeader) throws Exception {
         String email;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -71,17 +65,17 @@ public class TailorController {
         }
     }
 
-    @GetMapping("/tailor/status")
+    @GetMapping("/status")
     public ResponseEntity<List<TailorDto>> getTailorsByStatus(){
         return ResponseEntity.ok(tailorService.getAllByStatus(TailorStatus.PENDING));
     }
 
-    @GetMapping("/tailor/all")
+    @GetMapping("/all")
     public ResponseEntity<List<TailorDto>> getAllTailors(){
         return ResponseEntity.ok(tailorService.getAll());
     }
 
-    @PutMapping("/tailor/adminResponse")
+    @PutMapping("/adminResponse")
     public ResponseEntity<TailorDto> updateTailorAdmin(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
             Tailor tailor =tailorService.getById(tailorDto.getId());
@@ -117,7 +111,7 @@ public class TailorController {
         }
     }
 
-    @PutMapping("/tailor/update")
+    @PutMapping("/update")
     public ResponseEntity<TailorDto> updateTailor(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
             Tailor tailor =tailorService.getById(tailorDto.getId());

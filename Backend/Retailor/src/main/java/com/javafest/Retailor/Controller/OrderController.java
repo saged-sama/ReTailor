@@ -1,32 +1,20 @@
 package com.javafest.Retailor.Controller;
 
 
-import java.util.List;
+import com.javafest.Retailor.Config.JwtService;
+import com.javafest.Retailor.Entity.*;
+import com.javafest.Retailor.Enum.OrderStatus;
+import com.javafest.Retailor.Service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.javafest.Retailor.Config.JwtService;
-import com.javafest.Retailor.Entity.Customer;
-import com.javafest.Retailor.Entity.Orders;
-import com.javafest.Retailor.Entity.Product;
-import com.javafest.Retailor.Entity.Users;
-import com.javafest.Retailor.Enum.OrderStatus;
-import com.javafest.Retailor.Service.CustomerService;
-import com.javafest.Retailor.Service.OrderService;
-import com.javafest.Retailor.Service.ProductService;
-import com.javafest.Retailor.Service.TailorService;
-import com.javafest.Retailor.Service.UsersService;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/collections")
@@ -43,8 +31,11 @@ public class OrderController {
     private TailorService tailorService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductSizeService productSizeService;
 
-    @PostMapping("/customer/createOrder/{tailorId}/{productId}")
+    @PostMapping("/order/createOrder/{tailorId}/{productId}")
+    @Transactional
     public ResponseEntity<Orders> saveOrders(@ModelAttribute Orders orders,
                                              @PathVariable String tailorId,
                                              @PathVariable String productId,
@@ -57,25 +48,36 @@ public class OrderController {
             throw new Exception("Invalid Authorization header.");
         }
 
+        Product product=productService.getById(productId);
+        ProductSize productSize= productSizeService.getProductSizeByProductIdAndSize(productId, orders.getSize());
+        if (productSize.getQuantity() < orders.getQuantity()) {
+            throw new RuntimeException("Not enough stock available for size: " + orders.getSize());
+        }
+        productSize.setQuantity(productSize.getQuantity()-orders.getQuantity());
+        productSizeService.saveProductSize(productSize);
         Users users= usersService.getByEmail(email);
         Customer customer= customerService.getByUsers(users);
         if(!customer.getAddress().equals(orders.getDestinationAddress())){
             customer.setAddress(orders.getDestinationAddress());
-            Customer customer1 = customerService.updateCustomer(customer);
+            Customer customer1= customerService.updateCustomer(customer);
         }
         orders.setCustomer(customer);
         orders.setTailor(tailorService.getById(tailorId));
-        Product product=productService.getById(productId);
         orders.setProduct(product);
-        orders.setOrderStatus(OrderStatus.PENDING);
-        orders.setPrice(product.getBasePrice());
+        orders.setOrderStatus(OrderStatus.ACCEPTED);
+        orders.setPrice(product.getBasePrice()*orders.getQuantity());
 
         return ResponseEntity.ok(orderService.createOrder(orders));
     }
 
-    @PutMapping("/updateOrder")
-    public ResponseEntity<Orders> updateOrder(@ModelAttribute Orders orders){
-        return ResponseEntity.ok(orderService.updateOrders(orders));
+    @GetMapping("/order/productSize/{id}")
+    public ResponseEntity<List<ProductSize>> getProductSize(@PathVariable String id){
+        return ResponseEntity.ok(productSizeService.getProductSizeByProductId(id));
+    }
+
+    @PutMapping("/updateOrder/{orderId}")
+    public ResponseEntity<Orders> updateOrder(@PathVariable String orderId){
+        return ResponseEntity.ok(orderService.updateOrders(orderId));
     }
 
     @GetMapping("/admin/allOrder")
@@ -113,8 +115,8 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllCompletedOrdersByCustomer(offset, pageSize, customerId));
     }
 
-    @DeleteMapping("/admin/deleteOrder")
-    public ResponseEntity<String > deleteCancelledOrder(){
-        return ResponseEntity.ok(orderService.deleteCancelledProduct());
+    @DeleteMapping("/admin/deleteOrder/{tailorId}")
+    public ResponseEntity<String > deleteCancelledOrder(@PathVariable String tailorId){
+        return ResponseEntity.ok(orderService.deleteCancelledProduct(tailorId));
     }
 }
