@@ -2,19 +2,26 @@ package com.javafest.Retailor.Controller;
 
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.TailorDto;
+import com.javafest.Retailor.Entity.Portfolio;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.Role;
 import com.javafest.Retailor.Enum.TailorStatus;
 import com.javafest.Retailor.Repository.TailorRepo;
 import com.javafest.Retailor.Repository.UsersRepo;
+import com.javafest.Retailor.Service.FileService;
+import com.javafest.Retailor.Service.PortfolioService;
 import com.javafest.Retailor.Service.TailorService;
 import com.javafest.Retailor.Service.UsersService;
+import jakarta.servlet.annotation.MultipartConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +39,10 @@ public class TailorController {
     private UsersRepo usersRepo;
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private PortfolioService portfolioService;
+    @Autowired
+    private FileService fileService;
 
     @PostMapping("/tailor/save")
     public ResponseEntity<?> saveTailor(@ModelAttribute TailorDto tailorDto, @RequestHeader("Authorization") String authHeader) throws Exception {
@@ -130,5 +141,43 @@ public class TailorController {
             // Handle any exceptions and return a 500 (INTERNAL SERVER ERROR) status
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/tailor/addPortfolio")
+    @Transactional
+    public ResponseEntity<Portfolio> savePortfolio(@ModelAttribute Portfolio portfolio,
+                                                   @RequestParam("avatars") MultipartFile[] files,
+                                                   @RequestHeader("Authorization") String authHeader)throws Exception{
+        String email;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String jwt = authHeader.substring(7); // Remove "Bearer " prefix
+            email= jwtService.extractUsername(jwt);
+        } else {
+            throw new Exception("Invalid Authorization header.");
+        }
+        Users users= usersService.getByEmail(email);
+        Tailor tailor= tailorService.getByUser(users);
+        List<String>images=fileService.saveFiles(files);
+        portfolio.setTailor(tailor);
+        portfolio.setImages(images);
+        tailor.setPortfolio(portfolio);
+        //tailorService.save(tailor);
+        return ResponseEntity.ok(portfolioService.savePortfolio(portfolio));
+    }
+
+    @PutMapping("/tailor/updatePortfolio")
+    public ResponseEntity<Portfolio> updatePortfolio(@ModelAttribute Portfolio portfolio,
+                                                     @RequestParam("avatars") MultipartFile[] files)throws Exception{
+        return ResponseEntity.ok(portfolioService.updatePortfolio(portfolio,files));
+    }
+
+    @DeleteMapping("/tailor/deletePortfolio/{portfolioId}")
+    public ResponseEntity<String> deletePortfolio(@PathVariable Long portfolioId) throws IOException {
+        return ResponseEntity.ok(portfolioService.deletePortfolio(portfolioId));
+    }
+
+    @GetMapping("/tailor/getPortfolio/{tailorId}")
+    public ResponseEntity<Portfolio> getPortfolioByTailorsId(@PathVariable Long tailorId){
+        return ResponseEntity.ok(portfolioService.getPortfolioByTailorsId(tailorId));
     }
 }

@@ -32,6 +32,7 @@ public class Tailor {
     @Enumerated(EnumType.STRING)
     private TailorStatus tailorStatus;
     @OneToOne(mappedBy = "tailor", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Portfolio portfolio;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
