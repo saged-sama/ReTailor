@@ -11,5 +11,4 @@ public class Re_tailorApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(Re_tailorApplication.class, args);
 	}
-
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
+    import { PUBLIC_API_URL } from "$env/static/public";
     import { cart } from "$lib/stores/cart";
     import { ShoppingBasket } from "lucide-svelte";
 
     export let product: any;
     
-    let imageurl: string = `${PUBLIC_POCKETBASE_URL}/api/files/product/${product.id}/${product.images}`;
+    let imageurl: string = `${PUBLIC_API_URL}/api/files/product/${product.id}/${product.images}`;
 
     const addToCart = () => {
         cart.update(value => {

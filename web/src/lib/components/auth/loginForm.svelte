@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
     import Title from "../navbar/title.svelte";
     import { KeyRound, Mail } from "lucide-svelte";
 
@@ -10,14 +10,18 @@
             const form = e.target as HTMLFormElement;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-            await pocketbase.collection("users").authWithPassword(data.email as string, data.password as string);
+            await springbase.collection("users").authWithPassword(data.email as string, data.password as string);
         }
         catch(err){
             console.error("Error logging in: ", err);
         }
         
-        if(!pocketbase.authStore.isValid){
-            alert("Wrong Credentials");
+        if(!springbase.authStore.isValid){
+            alert("Something went wrong");
+        }
+
+        else{
+            goto("/");
         }
     };
 </script>

@@ -27,12 +27,12 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Product getById(Long id) {
+    public Product getById(String id) {
         return productRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     @Override
-    public String deleteProductById(Long id) {
+    public String deleteProductById(String id) {
         productRepo.deleteById(id);
         return "Successfully Deleted";
     }
@@ -116,19 +116,19 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, Long id) {
+    public Page<ProductDto> displayTailorProduct(int offset, int pageSize, String id) {
         Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize),id,0);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProduct(int offset, int pageSize,Long id) {
+    public Page<ProductDto> displayTailorSoldProduct(int offset, int pageSize,String id) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize),id);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public List<CategorySalesDto> getCategorySalesInLastMonthByTailor(Long tailorId) {
+    public List<CategorySalesDto> getCategorySalesInLastMonthByTailor(String tailorId) {
         List<Object[]> results = productRepo.findCategorySalesInLastMonthByTailor(tailorId);
 
         return results.stream()
@@ -141,7 +141,7 @@ public class ProductServiceImp implements ProductService {
 
 
     @Override
-    public List<ProductDto> searchTailorProduct(Long id,String parameter) {
+    public List<ProductDto> searchTailorProduct(String id,String parameter) {
         List<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThanAndNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(id,0,parameter,parameter);
         return helpToGetList(products);
     }
@@ -159,31 +159,31 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProductAsc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorSoldProductAsc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public Page<ProductDto> displayTailorSoldProductDesc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorSoldProductDesc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndSoldAtIsNotNull(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public Page<ProductDto> displayTailorProductAsc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorProductAsc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.ASC,sortKey),id,0);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, Long id, String sortKey) {
+    public Page<ProductDto> displayTailorProductDesc(int offset, int pageSize, String id, String sortKey) {
         Page<Product> products= productRepo.findByTailorsIdAndTotalCountGreaterThan(PageRequest.of(offset,pageSize).withSort(Sort.Direction.DESC,sortKey),id,0);
         return helpToGetPage(offset,pageSize,products);
     }
 
     @Override
-    public List<ProductDto> getProductByCategory(Long id,String category) {
+    public List<ProductDto> getProductByCategory(String id,String category) {
         List<Product> products= productRepo.findByTailorsIdAndCategoryAndTotalCountGreaterThan(id,category,0);
         return helpToGetList(products);
     }
@@ -201,7 +201,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductSize> getProductSizeForAProduct(Long id) {
+    public List<ProductSize> getProductSizeForAProduct(String id) {
         Product product= productRepo.findById(id).orElseThrow(() -> new RuntimeException("No Product Found!"));
         return product.getSizes();
     }

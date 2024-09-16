@@ -24,13 +24,13 @@ export default class Collection{
         this.webSocketUrl = this.baseurl.replace("http", "ws");
     }
 
-    async create(data: object){
+    async create(data: object | FormData){
         return await crud({
             "Access-Control-Request-Method": "POST"
         }).POST(`${this.baseurl}/records`, data);
     }
 
-    async update(id: string, data?: object){
+    async update(id: string, data: object){
         return await crud({
             "Access-Control-Request-Method": "PATCH"
         }).PATCH(`${this.baseurl}/records/${id}`, data);
@@ -79,12 +79,14 @@ export default class Collection{
 
     async authWithPassword(email: string, password: string){
         const resp = await crud().POST(`${this.baseurl}/auth-with-password`, { email, password });
-        localStorage.setItem("springbase_auth", JSON.stringify(resp.springbase_auth));
+        localStorage.setItem("springbase_auth", resp.access_token);
 
-        this.authStore.token = resp.springbase_auth;
+        this.authStore.token = resp.access_token;
         this.authStore.model = jwtDecode(this.authStore.token as string);
         this.authStore.isValid = true;
-        this.authStore.isAdmin = resp.springbase_auth.model.role === "ADMIN";
+        this.authStore.isAdmin = this.authStore.model?.role === "ADMIN";
+        
+        console.log("authStore", this.authStore);
 
         return resp.springbase_auth;
     }

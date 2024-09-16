@@ -37,8 +37,8 @@ public class OrderController {
     @PostMapping("/order/createOrder/{tailorId}/{productId}")
     @Transactional
     public ResponseEntity<Orders> saveOrders(@ModelAttribute Orders orders,
-                                             @PathVariable Long tailorId,
-                                             @PathVariable Long productId,
+                                             @PathVariable String tailorId,
+                                             @PathVariable String productId,
                                              @RequestHeader("Authorization") String authHeader)throws Exception{
         String email;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -71,12 +71,12 @@ public class OrderController {
     }
 
     @GetMapping("/order/productSize/{id}")
-    public ResponseEntity<List<ProductSize>> getProductSize(@PathVariable Long id){
+    public ResponseEntity<List<ProductSize>> getProductSize(@PathVariable String id){
         return ResponseEntity.ok(productSizeService.getProductSizeByProductId(id));
     }
 
     @PutMapping("/updateOrder/{orderId}")
-    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId){
+    public ResponseEntity<Orders> updateOrder(@PathVariable String orderId){
         return ResponseEntity.ok(orderService.updateOrders(orderId));
     }
 
@@ -86,37 +86,37 @@ public class OrderController {
     }
 
     @GetMapping("/tailor/pendingOrder/{tailorId}")
-    public ResponseEntity<List<Orders>> getAllTailorPendingOrders(@PathVariable Long tailorId){
+    public ResponseEntity<List<Orders>> getAllTailorPendingOrders(@PathVariable String tailorId){
         return ResponseEntity.ok(orderService.getAllPendingOrdersByTailors(tailorId));
     }
 
     @GetMapping("/customer/pendingOrder/{customerId}")
-    public ResponseEntity<List<Orders>> getAllCustomerPendingOrders(@PathVariable Long customerId){
+    public ResponseEntity<List<Orders>> getAllCustomerPendingOrders(@PathVariable String customerId){
         return ResponseEntity.ok(orderService.getAllPendingOrdersByCustomer(customerId));
     }
 
     @GetMapping("/tailor/acceptedOrder/{tailorId}")
-    public ResponseEntity<List<Orders>> getAllTailorAcceptedOrders(@PathVariable Long tailorId){
+    public ResponseEntity<List<Orders>> getAllTailorAcceptedOrders(@PathVariable String tailorId){
         return ResponseEntity.ok(orderService.getAllAcceptedOrdersByTailors(tailorId));
     }
 
     @GetMapping("/customer/acceptedOrder/{customerId}")
-    public ResponseEntity<List<Orders>> getAllCustomerAcceptedOrders(@PathVariable Long customerId){
+    public ResponseEntity<List<Orders>> getAllCustomerAcceptedOrders(@PathVariable String customerId){
         return ResponseEntity.ok(orderService.getAllAcceptedOrdersByCustomer(customerId));
     }
 
     @GetMapping("/tailor/completedOrder/{offset}/{pageSize}/{tailorId}")
-    public ResponseEntity<Page<Orders>> getAllTailorAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long tailorId){
+    public ResponseEntity<Page<Orders>> getAllTailorAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String tailorId){
         return ResponseEntity.ok(orderService.getAllCompletedOrdersByTailors(offset, pageSize, tailorId));
     }
 
     @GetMapping("/customer/completedOrder/{offset}/{pageSize}/{customerId}")
-    public ResponseEntity<Page<Orders>> getAllCustomerAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable Long customerId){
+    public ResponseEntity<Page<Orders>> getAllCustomerAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String customerId){
         return ResponseEntity.ok(orderService.getAllCompletedOrdersByCustomer(offset, pageSize, customerId));
     }
 
     @DeleteMapping("/admin/deleteOrder/{tailorId}")
-    public ResponseEntity<String > deleteCancelledOrder(@PathVariable Long tailorId){
+    public ResponseEntity<String > deleteCancelledOrder(@PathVariable String tailorId){
         return ResponseEntity.ok(orderService.deleteCancelledProduct(tailorId));
     }
 }

@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
     import Avatar from "./avatar.svelte";
-    import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
+    import { PUBLIC_API_URL } from "$env/static/public";
 
     let isLoggedIn = false;
-    let user = pocketbase.authStore.model;
+    let user = springbase.authStore.model;
 
     $: {
-        isLoggedIn = pocketbase.authStore.isValid;
-        user = pocketbase.authStore.model;
+        isLoggedIn = springbase.authStore.isValid;
+        user = springbase.authStore.model;
     }
 </script>
 
@@ -26,7 +26,7 @@
         <summary class="btn btn-ghost rounded-full p-0">
             <div class="w-10 h-10 rounded-full overflow-hidden">
                 <img
-                    src={`${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
+                    src={`${PUBLIC_API_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
                     alt="Avatar"
                     class="w-full h-full object-cover"
                 />
@@ -43,7 +43,7 @@
             </li>
             <li>
                 <button
-                    on:click={() => pocketbase.authStore.clear()}
+                    on:click={() => springbase.authStore.clear()}
                     class="text-warning"
                 >
                     Logout

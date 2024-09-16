@@ -1,18 +1,27 @@
 package com.javafest.Retailor.Entity;
 
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.autoconfigure.web.WebProperties;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -21,11 +30,11 @@ import java.util.List;
 @Setter
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String Id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String gender;
     private String phone;
     @CreationTimestamp
@@ -33,7 +42,7 @@ public class Customer {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private String avatar;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String address;
     @OneToOne(mappedBy = "customerId", cascade = CascadeType.ALL)
     private Measurements measurements;

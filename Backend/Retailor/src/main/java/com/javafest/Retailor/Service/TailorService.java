@@ -1,13 +1,11 @@
 package com.javafest.Retailor.Service;
 
-import com.javafest.Retailor.Dto.ProductDto;
+import java.util.List;
+
 import com.javafest.Retailor.Dto.TailorDto;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.TailorStatus;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface TailorService {
     public TailorDto save(Tailor tailor);
@@ -15,5 +13,5 @@ public interface TailorService {
     public List<TailorDto> getAll();
     public Tailor getByUser(Users users);
 
-    public Tailor getById(Long id);
+    public Tailor getById(String id);
 }

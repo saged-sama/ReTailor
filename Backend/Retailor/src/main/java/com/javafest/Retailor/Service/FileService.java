@@ -1,10 +1,9 @@
 package com.javafest.Retailor.Service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
     public List<String> saveFiles(MultipartFile[] files) throws IOException;

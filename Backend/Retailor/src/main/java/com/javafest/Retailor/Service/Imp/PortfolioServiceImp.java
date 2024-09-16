@@ -45,7 +45,7 @@ public class PortfolioServiceImp implements PortfolioService {
 
     @Override
     @Transactional
-    public String deletePortfolio(Long portfolioId) throws IOException {
+    public String deletePortfolio(String portfolioId) throws IOException {
         Portfolio portfolio1= portfolioRepo.findById(portfolioId).orElseThrow(() -> new RuntimeException("No Portfolio Found!"));
         for(String image: portfolio1.getImages()){
             fileService.deleteFile(image);
@@ -56,7 +56,7 @@ public class PortfolioServiceImp implements PortfolioService {
     }
 
     @Override
-    public Portfolio getPortfolioByTailorsId(Long tailorId) {
+    public Portfolio getPortfolioByTailorsId(String tailorId) {
         return portfolioRepo.findByTailorId(tailorId);
     }
 }

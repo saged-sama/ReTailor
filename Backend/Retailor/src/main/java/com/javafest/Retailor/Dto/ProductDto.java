@@ -1,20 +1,19 @@
 package com.javafest.Retailor.Dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javafest.Retailor.Entity.ProductSize;
 import com.javafest.Retailor.Entity.Tailor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-    private Long Id;
+    private String Id;
     private String name;
     private String description;
     private String category;

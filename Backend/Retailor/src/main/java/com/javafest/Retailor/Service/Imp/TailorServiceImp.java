@@ -1,23 +1,17 @@
 package com.javafest.Retailor.Service.Imp;
 
-import com.javafest.Retailor.Dto.ProductDto;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.javafest.Retailor.Dto.TailorDto;
-import com.javafest.Retailor.Entity.Product;
 import com.javafest.Retailor.Entity.Tailor;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.TailorStatus;
 import com.javafest.Retailor.Repository.TailorRepo;
 import com.javafest.Retailor.Service.TailorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TailorServiceImp implements TailorService {
@@ -95,7 +89,7 @@ public class TailorServiceImp implements TailorService {
     }
 
     @Override
-    public Tailor getById(Long id) {
+    public Tailor getById(String id) {
         return tailorRepo.findById(id).orElseThrow(() -> new RuntimeException("Tailor not found"));
     }
 }

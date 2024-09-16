@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
+    import { PUBLIC_API_URL } from "$env/static/public";
     import { User } from "lucide-svelte";
     export let user: any;
     export let size: number = 10;
@@ -12,7 +12,7 @@
 {#if user?.avatar}
     <div class={classs}>
         <img
-            src={`${PUBLIC_POCKETBASE_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
+            src={`${PUBLIC_API_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
             alt="Avatar"
             class="w-full h-full object-cover"
         />

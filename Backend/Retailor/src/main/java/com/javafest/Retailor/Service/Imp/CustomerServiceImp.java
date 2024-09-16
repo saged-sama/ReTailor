@@ -34,7 +34,7 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public CustomerDto findByCustomerId(Long Id) {
+    public CustomerDto findByCustomerId(String Id) {
         Optional <Customer> customer = customerRepo.findById(Id);
         CustomerDto customerDto = new CustomerDto();
 

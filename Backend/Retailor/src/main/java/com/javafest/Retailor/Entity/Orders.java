@@ -3,15 +3,13 @@ package com.javafest.Retailor.Entity;
 
 import com.javafest.Retailor.Enum.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -20,8 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Orders {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "customerId")

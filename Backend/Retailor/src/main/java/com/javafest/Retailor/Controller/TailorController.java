@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/collections")
+@RequestMapping("/api/collections/tailors")
 public class TailorController {
     @Autowired
     private TailorService tailorService;
@@ -44,7 +44,7 @@ public class TailorController {
     @Autowired
     private FileService fileService;
 
-    @PostMapping("/tailor/save")
+    @PostMapping("/")
     public ResponseEntity<?> saveTailor(@ModelAttribute TailorDto tailorDto, @RequestHeader("Authorization") String authHeader) throws Exception {
         String email;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -76,17 +76,17 @@ public class TailorController {
         }
     }
 
-    @GetMapping("/tailor/status")
+    @GetMapping("/status")
     public ResponseEntity<List<TailorDto>> getTailorsByStatus(){
         return ResponseEntity.ok(tailorService.getAllByStatus(TailorStatus.PENDING));
     }
 
-    @GetMapping("/tailor/all")
+    @GetMapping("/all")
     public ResponseEntity<List<TailorDto>> getAllTailors(){
         return ResponseEntity.ok(tailorService.getAll());
     }
 
-    @PutMapping("/tailor/adminResponse")
+    @PutMapping("/adminResponse")
     public ResponseEntity<TailorDto> updateTailorAdmin(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
             Tailor tailor =tailorService.getById(tailorDto.getId());
@@ -122,7 +122,7 @@ public class TailorController {
         }
     }
 
-    @PutMapping("/tailor/update")
+    @PutMapping("/update")
     public ResponseEntity<TailorDto> updateTailor(@ModelAttribute TailorDto tailorDto) throws Exception{
         try {
             Tailor tailor =tailorService.getById(tailorDto.getId());
@@ -172,12 +172,12 @@ public class TailorController {
     }
 
     @DeleteMapping("/tailor/deletePortfolio/{portfolioId}")
-    public ResponseEntity<String> deletePortfolio(@PathVariable Long portfolioId) throws IOException {
+    public ResponseEntity<String> deletePortfolio(@PathVariable String portfolioId) throws IOException {
         return ResponseEntity.ok(portfolioService.deletePortfolio(portfolioId));
     }
 
     @GetMapping("/tailor/getPortfolio/{tailorId}")
-    public ResponseEntity<Portfolio> getPortfolioByTailorsId(@PathVariable Long tailorId){
+    public ResponseEntity<Portfolio> getPortfolioByTailorsId(@PathVariable String tailorId){
         return ResponseEntity.ok(portfolioService.getPortfolioByTailorsId(tailorId));
     }
 }
