@@ -50,7 +50,7 @@ public class AuthController {
     public ResponseEntity<?> saveCustomer(@ModelAttribute RegisterReq registerReq,
                                                                @RequestParam("avatar") MultipartFile[] files) throws IOException {
         System.out.println(registerReq);
-        if(registerReq.getPassword().equals(registerReq.getPasswordConfirm()) == false){
+        if(!registerReq.getPassword().equals(registerReq.getPasswordConfirm())){
             return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
         }
         Users users = new Users();
@@ -68,8 +68,8 @@ public class AuthController {
 
         Customer customer= new Customer();
         customer.setName(registerReq.getFirstName() + " " + registerReq.getLastName());
-        // customer.setGender(registerReq.getGender());
-        // customer.setAddress(registerReq.getAddress());
+         customer.setGender(registerReq.getGender());
+         customer.setAddress(registerReq.getAddress());
         customer.setPhone(registerReq.getPhone().trim());
         customer.setUsers(createdUser);
         try {

@@ -8,14 +8,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Service.FileService;
@@ -60,29 +59,40 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/product/display/{offset}/{pageSize}")
-    public ResponseEntity<Page<ProductDto>> getAllProduct(@PathVariable int offset, @PathVariable int pageSize){
+    @GetMapping("/home/products")
+    public ResponseEntity<?> getProducts(
+            @RequestParam(required = false) String search, // Search parameter for name or category
+            @RequestParam(required = false) String sortKey, // Sort key for sorting
+            @RequestParam(required = false) String sortDirection, // "asc" or "desc"
+            @RequestParam(required = false) String category, // Category to filter products
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        PageRequest pageRequest = PageRequest.of(offset, pageSize);
 
-        return ResponseEntity.ok(productService.displayProduct(offset,pageSize));
-    }
+        // Apply sorting if sortKey is provided
+        if (sortKey != null) {
+            Sort.Direction direction = (sortDirection != null && sortDirection.equalsIgnoreCase("desc")) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageRequest = PageRequest.of(offset, pageSize, Sort.by(direction, sortKey));
+        }
 
-    @GetMapping("/product/search/{offset}/{pageSize}/{param}")
-    public ResponseEntity<Page<ProductDto> > searchAllProduct(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
-        return ResponseEntity.ok(productService.searchProduct(offset,pageSize,param));
-    }
+        // Determine which service method to call based on provided parameters
+        if (search != null) {
+            return ResponseEntity.ok(productService.searchProduct(offset, pageSize, search));
+        }
 
-    @GetMapping("/product/sortAsc/{offset}/{pageSize}/{param}")
-    public ResponseEntity<Page<ProductDto> > sortAllProductAsc(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
-        return ResponseEntity.ok(productService.sortByParticularFieldAsc(offset,pageSize,param));
-    }
+        if (category != null) {
+            return ResponseEntity.ok(productService.allProductByCategory(category));
+        }
 
-    @GetMapping("/product/sortDesc/{offset}/{pageSize}/{param}")
-    public ResponseEntity<Page<ProductDto> > sortAllProductDesc(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String param){
-        return ResponseEntity.ok(productService.sortByParticularFieldDesc(offset,pageSize,param));
-    }
+        if (sortKey != null) {
+            if ("asc".equalsIgnoreCase(sortDirection)) {
+                return ResponseEntity.ok(productService.sortByParticularFieldAsc(offset, pageSize, sortKey));
+            } else {
+                return ResponseEntity.ok(productService.sortByParticularFieldDesc(offset, pageSize, sortKey));
+            }
+        }
 
-    @GetMapping("/product/category/{param}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable String param){
-        return ResponseEntity.ok(productService.allProductByCategory(param));
+        return ResponseEntity.ok(productService.displayProduct(offset, pageSize));
     }
 }

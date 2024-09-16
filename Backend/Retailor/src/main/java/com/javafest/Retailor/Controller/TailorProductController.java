@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -115,51 +117,60 @@ public class TailorProductController {
         return productService.deleteProductById(id);
     }
 
-    @GetMapping("/product/display/{offset}/{pageSize}/{id}")
-    public ResponseEntity<Page<ProductDto>> getTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id){
-        return ResponseEntity.ok(productService.displayTailorProduct(offset,pageSize,id));
-    }
-    @GetMapping("/product/sortAsc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getTailorProductAsc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id,@PathVariable String param){
-        return ResponseEntity.ok(productService.displayTailorProductAsc(offset,pageSize,id,param));
-    }
-    @GetMapping("/product/sortDesc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getTailorProductDesc(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id, @PathVariable String param){
-        return ResponseEntity.ok(productService.displayTailorProductDesc(offset,pageSize,id,param));
+    @GetMapping("/product/filter")
+    public ResponseEntity<?> getProducts(
+            @RequestParam(required = false) String id, // Tailor ID
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String parameter, // Search parameter for name or category
+            @RequestParam(required = false) Boolean soldOnly, // Filter sold products
+            @RequestParam(required = false) String sortKey, // Sort key for sorting
+            @RequestParam(required = false) String sortDirection, // "asc" or "desc"
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        PageRequest pageRequest = PageRequest.of(offset, pageSize);
+
+        // Apply sorting if sortKey is provided
+        if (sortKey != null) {
+            Sort.Direction direction = (sortDirection != null && sortDirection.equalsIgnoreCase("desc")) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageRequest = PageRequest.of(offset, pageSize, Sort.by(direction, sortKey));
+        }
+
+        // Determine which service method to call based on provided parameters
+        if (id != null) {
+            if (soldOnly != null) {
+                return ResponseEntity.ok(productService.displayTailorSoldProductAsc(offset, pageSize, id, sortKey));
+            }
+            if (parameter != null) {
+                return ResponseEntity.ok(productService.searchTailorProduct(id, parameter));
+            }
+            if (category != null) {
+                return ResponseEntity.ok(productService.getProductByCategory(id, category));
+            }
+            if (sortKey != null) {
+                return ResponseEntity.ok(productService.displayTailorProductAsc(offset, pageSize, id, sortKey));
+            }
+            return ResponseEntity.ok(productService.displayTailorProduct(offset, pageSize, id));
+        }
+
+        if (parameter != null) {
+            return ResponseEntity.ok(productService.searchProduct(offset, pageSize, parameter));
+        }
+
+        if (category != null) {
+            return ResponseEntity.ok(productService.allProductByCategory(category));
+        }
+
+        return ResponseEntity.ok(productService.displayProduct(offset, pageSize));
     }
 
-    @GetMapping("/product/sold/{offset}/{pageSize}/{id}")
-    public ResponseEntity<Page<ProductDto>> getSoldTailorProduct(@PathVariable int offset, @PathVariable int pageSize, @PathVariable String id){
-        return ResponseEntity.ok(productService.displayTailorSoldProduct(offset,pageSize,id));
-    }
-
-    @GetMapping("/product/search/{id}/{param}")
-    public ResponseEntity<List<ProductDto>> getSearchTailorProduct(@PathVariable String id, @PathVariable String param){
-        return ResponseEntity.ok(productService.searchTailorProduct(id,param));
-    }
-
-    @GetMapping("/soldProduct/sortAsc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getSortedAscTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String id, @PathVariable String param){
-        return ResponseEntity.ok(productService.displayTailorSoldProductAsc(offset,pageSize,id,param));
-    }
-
-    @GetMapping("/soldProduct/sortDesc/{offset}/{pageSize}/{id}/{param}")
-    public ResponseEntity<Page<ProductDto>> getSortedDescTailorProduct(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String id, @PathVariable String param){
-        return ResponseEntity.ok(productService.displayTailorSoldProductDesc(offset,pageSize,id,param));
-    }
-
-    @GetMapping("/product/category/{id}/{category}")
-    public ResponseEntity<List<ProductDto>> getTailorProductByCategory(@PathVariable String id, @PathVariable String category){
-        return ResponseEntity.ok(productService.getProductByCategory(id,category));
-    }
-
-    @GetMapping("/trendingProduct/{id}")
-    public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable String id){
-        return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
-    }
-
-    @GetMapping("/productSize/{id}")
-    public ResponseEntity<List<ProductSize>> getProductSizes(@PathVariable String id){
+    @GetMapping("/sizes/{id}")
+    public ResponseEntity<List<ProductSize>> getProductSizes(@PathVariable String id) {
         return ResponseEntity.ok(productService.getProductSizeForAProduct(id));
+    }
+
+    @GetMapping("/trending/{id}")
+    public ResponseEntity<List<CategorySalesDto>> getTrendingCategory(@PathVariable String id) {
+        return ResponseEntity.ok(productService.getCategorySalesInLastMonthByTailor(id));
     }
 }

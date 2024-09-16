@@ -143,7 +143,7 @@ public class TailorController {
         }
     }
 
-    @PostMapping("/tailor/addPortfolio")
+    @PostMapping("/addPortfolio")
     @Transactional
     public ResponseEntity<Portfolio> savePortfolio(@ModelAttribute Portfolio portfolio,
                                                    @RequestParam("avatars") MultipartFile[] files,
@@ -165,18 +165,18 @@ public class TailorController {
         return ResponseEntity.ok(portfolioService.savePortfolio(portfolio));
     }
 
-    @PutMapping("/tailor/updatePortfolio")
+    @PutMapping("/updatePortfolio")
     public ResponseEntity<Portfolio> updatePortfolio(@ModelAttribute Portfolio portfolio,
                                                      @RequestParam("avatars") MultipartFile[] files)throws Exception{
         return ResponseEntity.ok(portfolioService.updatePortfolio(portfolio,files));
     }
 
-    @DeleteMapping("/tailor/deletePortfolio/{portfolioId}")
+    @DeleteMapping("/deletePortfolio/{portfolioId}")
     public ResponseEntity<String> deletePortfolio(@PathVariable String portfolioId) throws IOException {
         return ResponseEntity.ok(portfolioService.deletePortfolio(portfolioId));
     }
 
-    @GetMapping("/tailor/getPortfolio/{tailorId}")
+    @GetMapping("/getPortfolio/{tailorId}")
     public ResponseEntity<Portfolio> getPortfolioByTailorsId(@PathVariable String tailorId){
         return ResponseEntity.ok(portfolioService.getPortfolioByTailorsId(tailorId));
     }

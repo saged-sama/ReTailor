@@ -70,49 +70,50 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(orders));
     }
 
-    @GetMapping("/order/productSize/{id}")
-    public ResponseEntity<List<ProductSize>> getProductSize(@PathVariable String id){
-        return ResponseEntity.ok(productSizeService.getProductSizeByProductId(id));
-    }
-
     @PutMapping("/updateOrder/{orderId}")
     public ResponseEntity<Orders> updateOrder(@PathVariable String orderId){
         return ResponseEntity.ok(orderService.updateOrders(orderId));
     }
+    @GetMapping("/order/filter")
+    public ResponseEntity<?> getOrders(
+            @RequestParam(required = false) String tailorId, // Filter by tailor ID
+            @RequestParam(required = false) String customerId, // Filter by customer ID
+            @RequestParam(required = false) String productId, //Filter by product id
+            @RequestParam(required = false) String status, // Filter by order status (e.g., "PENDING", "ACCEPTED", "COMPLETED")
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        // Handle product size retrieval
+        if (tailorId == null && customerId == null && status == null) {
+            return ResponseEntity.ok(productSizeService.getProductSizeByProductId(productId));
+        }
 
-    @GetMapping("/admin/allOrder")
-    public ResponseEntity<List<Orders>> getAllOrders(){
+        // Handle order retrieval based on status and ID
+        if (status != null) {
+            if (tailorId != null) {
+                switch (status.toUpperCase()) {
+                    case "PENDING":
+                        return ResponseEntity.ok(orderService.getAllPendingOrdersByTailors(tailorId));
+                    case "ACCEPTED":
+                        return ResponseEntity.ok(orderService.getAllAcceptedOrdersByTailors(tailorId));
+                    case "COMPLETED":
+                        return ResponseEntity.ok(orderService.getAllCompletedOrdersByTailors(offset, pageSize, tailorId));
+                }
+            }
+            if (customerId != null) {
+                switch (status.toUpperCase()) {
+                    case "PENDING":
+                        return ResponseEntity.ok(orderService.getAllPendingOrdersByCustomer(customerId));
+                    case "ACCEPTED":
+                        return ResponseEntity.ok(orderService.getAllAcceptedOrdersByCustomer(customerId));
+                    case "COMPLETED":
+                        return ResponseEntity.ok(orderService.getAllCompletedOrdersByCustomer(offset, pageSize, customerId));
+                }
+            }
+        }
+
+        // Handle retrieval of all orders
         return ResponseEntity.ok(orderService.getAllOrders());
-    }
-
-    @GetMapping("/tailor/pendingOrder/{tailorId}")
-    public ResponseEntity<List<Orders>> getAllTailorPendingOrders(@PathVariable String tailorId){
-        return ResponseEntity.ok(orderService.getAllPendingOrdersByTailors(tailorId));
-    }
-
-    @GetMapping("/customer/pendingOrder/{customerId}")
-    public ResponseEntity<List<Orders>> getAllCustomerPendingOrders(@PathVariable String customerId){
-        return ResponseEntity.ok(orderService.getAllPendingOrdersByCustomer(customerId));
-    }
-
-    @GetMapping("/tailor/acceptedOrder/{tailorId}")
-    public ResponseEntity<List<Orders>> getAllTailorAcceptedOrders(@PathVariable String tailorId){
-        return ResponseEntity.ok(orderService.getAllAcceptedOrdersByTailors(tailorId));
-    }
-
-    @GetMapping("/customer/acceptedOrder/{customerId}")
-    public ResponseEntity<List<Orders>> getAllCustomerAcceptedOrders(@PathVariable String customerId){
-        return ResponseEntity.ok(orderService.getAllAcceptedOrdersByCustomer(customerId));
-    }
-
-    @GetMapping("/tailor/completedOrder/{offset}/{pageSize}/{tailorId}")
-    public ResponseEntity<Page<Orders>> getAllTailorAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String tailorId){
-        return ResponseEntity.ok(orderService.getAllCompletedOrdersByTailors(offset, pageSize, tailorId));
-    }
-
-    @GetMapping("/customer/completedOrder/{offset}/{pageSize}/{customerId}")
-    public ResponseEntity<Page<Orders>> getAllCustomerAcceptedOrders(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String customerId){
-        return ResponseEntity.ok(orderService.getAllCompletedOrdersByCustomer(offset, pageSize, customerId));
     }
 
     @DeleteMapping("/admin/deleteOrder/{tailorId}")
