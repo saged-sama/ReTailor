@@ -1,14 +1,16 @@
 package com.javafest.Retailor.Service.Imp;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.javafest.Retailor.Dto.CustomerDto;
 import com.javafest.Retailor.Entity.Customer;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Repository.CustomerRepo;
 import com.javafest.Retailor.Service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import com.javafest.Retailor.utils.EntityUpdate;
 
 @Service
 public class CustomerServiceImp implements CustomerService {
@@ -60,7 +62,12 @@ public class CustomerServiceImp implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(Customer customer) {
-        return customerRepo.save(customer);
+    public Customer updateCustomer(Customer customer, String customerId) {
+        Customer existingCustomer = customerRepo.findById(customerId)
+            .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        EntityUpdate.merge(existingCustomer, customer);
+
+        return customerRepo.save(existingCustomer);
     }
 }

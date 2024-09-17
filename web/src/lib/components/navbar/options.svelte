@@ -2,31 +2,34 @@
     import { springbase } from "$lib/utils/springbase";
     import Avatar from "./avatar.svelte";
     import { PUBLIC_API_URL } from "$env/static/public";
-
-    let isLoggedIn = false;
-    let user = springbase.authStore.model;
+    import { currentUser, resetCurrentUser } from "$lib/stores/currentUser";
+    import { goto } from "$app/navigation";
+    let user = $currentUser;
 
     $: {
-        isLoggedIn = springbase.authStore.isValid;
-        user = springbase.authStore.model;
+        user = $currentUser;
     }
 </script>
 
-{#if isLoggedIn}
+{#if user.id}
     <a class="md:hidden rounded-lg" href={`/app/${user?.id}/profile`}>
         <div class="rounded-full">
             <Avatar user={user} size={5}/>
         </div>
         <div>
-            {[user?.firstName || "", user?.lastName || ""].join(" ")}
+            {user?.name}
         </div>
     </a>
-    <a href="/auth/logout" class="md:hidden text-warning"> Logout </a>
+    <button on:click={() => {
+        springbase.authStore.clear();
+        resetCurrentUser();
+        goto("/");
+    }} class="md:hidden text-warning"> Logout </button>
     <details class="md:block hidden dropdown dropdown-end">
         <summary class="btn btn-ghost rounded-full p-0">
             <div class="w-10 h-10 rounded-full overflow-hidden">
                 <img
-                    src={`${PUBLIC_API_URL}/api/files/_pb_users_auth_/${user?.id}/${user?.avatar}`}
+                    src={`${PUBLIC_API_URL}/api/files/users/${user?.id}/${user?.avatar}`}
                     alt="Avatar"
                     class="w-full h-full object-cover"
                 />
@@ -38,12 +41,16 @@
             <li>
                 <a href={`/app/${user?.id}/profile`}>
                     <Avatar user={user} size={5} />
-                    {[user?.firstName || "", user?.lastName || ""].join(" ")}
+                    {user.name}
                 </a>
             </li>
             <li>
                 <button
-                    on:click={() => springbase.authStore.clear()}
+                    on:click={() => {
+                        springbase.authStore.clear();
+                        resetCurrentUser();
+                        goto("/");
+                    }}
                     class="text-warning"
                 >
                     Logout
@@ -52,7 +59,10 @@
         </ul>
     </details>
 {:else}
-    <a class="btn btn-primary btn-sm md:btn-md" href="/auth/register">
-        Get Started
-    </a>
+    <div class="flex md:flex-row-reverse gap-2 w-full">
+        <a class="btn btn-primary btn-sm md:btn-md max-md:w-1/2" href="/auth/register">
+            Get Started
+        </a>
+        <a class="btn btn-neutral btn-sm md:btn-md w-1/2" href="/auth/login">Login</a>
+    </div>
 {/if}

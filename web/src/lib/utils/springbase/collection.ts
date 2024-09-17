@@ -25,21 +25,33 @@ export default class Collection{
     }
 
     async create(data: object | FormData){
-        return await crud({
+        let headers: any = {
             "Access-Control-Request-Method": "POST"
-        }).POST(`${this.baseurl}/records`, data);
+        };
+        if(this.authStore.isValid){
+            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        }
+        return await crud(headers).POST(`${this.baseurl}/records`, data);
     }
 
     async update(id: string, data: object){
-        return await crud({
+        let headers: any = {
             "Access-Control-Request-Method": "PATCH"
-        }).PATCH(`${this.baseurl}/records/${id}`, data);
+        }
+        if(this.authStore.isValid){
+            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        }
+        return await crud(headers).PATCH(`${this.baseurl}/records/${id}`, data);
     }
 
     async delete(id: string){
-        return await crud({
-            "Access-Control-Request-Method": "DELETE"
-        }).DELETE(`${this.baseurl}/records/${id}`);
+        let headers: any = {
+            "Access-Control-Request-Method": "PATCH"
+        }
+        if(this.authStore.isValid){
+            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        }
+        return await crud(headers).DELETE(`${this.baseurl}/records/${id}`);
     }
 
     async getOne(id: string, options?: object){
@@ -47,10 +59,13 @@ export default class Collection{
         if(options){
             url += "?" + urlSearchParametersFromObject(options);
         }
-
-        return await crud({
+        let headers: any = {
             "Access-Control-Request-Method": "GET"
-        }).GET(url);
+        }
+        if(this.authStore.isValid){
+            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        }
+        return await crud(headers).GET(url);
     }
 
     async getList(page: number, perPage: number, options?: object){
@@ -58,10 +73,13 @@ export default class Collection{
         if(options){
             url += "&" + urlSearchParametersFromObject(options);
         }
-
-        return await crud({
+        let headers: any = {
             "Access-Control-Request-Method": "GET"
-        }).GET(url);
+        }
+        if(this.authStore.isValid){
+            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        }
+        return await crud(headers).GET(url);
     }
 
     async getFullList(options?: object){
@@ -70,7 +88,7 @@ export default class Collection{
 
     async getFirstListItem(filter: string, options?: object){
         options = { ...options, filter, skipTotal: 1 };
-        return (await this.getList(1, 1, options)).items[0];
+        return (await this.getList(1, 1, options));
     }
 
     subscribe() {
@@ -79,14 +97,23 @@ export default class Collection{
 
     async authWithPassword(email: string, password: string){
         const resp = await crud().POST(`${this.baseurl}/auth-with-password`, { email, password });
+        if(!resp){
+            this.authStore.token = undefined;
+            this.authStore.model = undefined;
+            this.authStore.isValid = false;
+            this.authStore.isAdmin = false;
+        }
         localStorage.setItem("springbase_auth", resp.access_token);
 
         this.authStore.token = resp.access_token;
-        this.authStore.model = jwtDecode(this.authStore.token as string);
+        const model: any = jwtDecode(this.authStore.token as string);
+        this.authStore.model = {
+            id: model?.userId,
+            email: model?.sub,
+            role: model?.authorities,
+        }
         this.authStore.isValid = true;
         this.authStore.isAdmin = this.authStore.model?.role === "ADMIN";
-        
-        console.log("authStore", this.authStore);
 
         return resp.springbase_auth;
     }

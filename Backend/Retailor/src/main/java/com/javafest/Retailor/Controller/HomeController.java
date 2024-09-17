@@ -4,24 +4,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.javafest.Retailor.Dto.ProductDto;
 import com.javafest.Retailor.Service.FileService;
 import com.javafest.Retailor.Service.ProductService;
 
 @RestController
-@RequestMapping("/api/collections")
+@RequestMapping("/api/files")
 public class HomeController {
 
     @Autowired
@@ -34,8 +35,8 @@ public class HomeController {
         return "Hello!";
     }
 
-    @GetMapping("/images/{fileName:.+}")
-    public ResponseEntity<byte[]> downloadAvatar(@PathVariable String fileName) {
+    @GetMapping("/{tablename}/{recordId}/{fileName:.+}")
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable String tablename, @PathVariable String recordId, @PathVariable String fileName) {
         try {
             // Use the fileName to load the file (the service will prepend "images/" if necessary)
             byte[] file = fileService.loadFileAsResource(fileName);

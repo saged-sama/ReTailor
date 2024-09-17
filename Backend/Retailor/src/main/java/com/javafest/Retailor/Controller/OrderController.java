@@ -1,19 +1,33 @@
 package com.javafest.Retailor.Controller;
 
 
-import com.javafest.Retailor.Config.JwtService;
-import com.javafest.Retailor.Entity.*;
-import com.javafest.Retailor.Enum.OrderStatus;
-import com.javafest.Retailor.Service.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.javafest.Retailor.Config.JwtService;
+import com.javafest.Retailor.Entity.Customer;
+import com.javafest.Retailor.Entity.Orders;
+import com.javafest.Retailor.Entity.Product;
+import com.javafest.Retailor.Entity.ProductSize;
+import com.javafest.Retailor.Entity.Users;
+import com.javafest.Retailor.Enum.OrderStatus;
+import com.javafest.Retailor.Service.CustomerService;
+import com.javafest.Retailor.Service.OrderService;
+import com.javafest.Retailor.Service.ProductService;
+import com.javafest.Retailor.Service.ProductSizeService;
+import com.javafest.Retailor.Service.TailorService;
+import com.javafest.Retailor.Service.UsersService;
 
 
 @RestController
@@ -59,7 +73,7 @@ public class OrderController {
         Customer customer= customerService.getByUsers(users);
         if(!customer.getAddress().equals(orders.getDestinationAddress())){
             customer.setAddress(orders.getDestinationAddress());
-            Customer customer1= customerService.updateCustomer(customer);
+            Customer customer1= customerService.updateCustomer(customer, customer.getId());
         }
         orders.setCustomer(customer);
         orders.setTailor(tailorService.getById(tailorId));

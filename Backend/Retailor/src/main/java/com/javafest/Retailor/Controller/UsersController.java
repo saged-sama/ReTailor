@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class UsersController {
 
     @GetMapping("/records")
     public ResponseEntity<Page<Users>> getAllUsers(
-        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int perPage,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "asc") String sortDir,
@@ -30,8 +31,9 @@ public class UsersController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/record/{id}")
-    public Users getUserById(String id) {
-        return usersService.getById(id);
+    @GetMapping("/records/{id}")
+    public ResponseEntity<Users> getUserById(@PathVariable String id) {
+        System.out.println("id: " + id);
+        return ResponseEntity.ok(usersService.getById(id));
     }
 }

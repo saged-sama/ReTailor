@@ -8,5 +8,5 @@ public interface CustomerService {
     public CustomerDto saveCustomer(Customer customer);
     public CustomerDto findByCustomerId(String Id);
     public Customer getByUsers(Users users);
-    public Customer updateCustomer(Customer customer);
+    public Customer updateCustomer(Customer customer, String CustomerId);
 }

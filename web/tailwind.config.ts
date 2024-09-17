@@ -18,28 +18,28 @@ export default {
 
   daisyui: {
     themes: [
-      "dim", "nord", "forest", "dark", "light", "synthwave", "halloween", "bumblebee", "dracula", "black", "business", "coffee", "sunset",
-      {
-        retailor: {
-            "primary": "#fa053e",
+      "dim",
+      // {
+      //   retailor: {
+      //       "primary": "#fa053e",
           
-            "secondary": "#1cfc03",
+      //       "secondary": "#1cfc03",
                       
-            "accent": "#00955a",
+      //       "accent": "#00955a",
                       
-            "neutral": "#040702",
+      //       "neutral": "#040702",
                       
-            "base-100": "#121c22",
+      //       "base-100": "#121c22",
                       
-            "info": "#14ffd4",
+      //       "info": "#14ffd4",
                       
-            "success": "#00a676",
+      //       "success": "#00a676",
                       
-            "warning": "#ffab3e",
+      //       "warning": "#ffab3e",
                       
-            "error": "#ff627f",
-        }
-      }
+      //       "error": "#ff627f",
+      //   }
+      // }
     ]
   },
 

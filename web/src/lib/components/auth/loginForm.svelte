@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { currentUser } from "$lib/stores/currentUser";
     import { springbase } from "$lib/utils/springbase";
     import Title from "../navbar/title.svelte";
     import { KeyRound, Mail } from "lucide-svelte";
@@ -21,6 +22,14 @@
         }
 
         else{
+            const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
+            const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
+
+            $currentUser = {
+                ...customerDet,
+                ...cuserDet,
+                customerId: customerDet.id
+            }
             goto("/");
         }
     };

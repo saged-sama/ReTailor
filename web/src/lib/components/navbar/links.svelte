@@ -18,7 +18,7 @@
 
 </script>
 
-<details class="block md:hidden dropdown dropdown-end">
+<details class="block md:hidden dropdown dropdown-end       ">
     <summary class="btn btn-sm"> <Menu /> </summary>
     <ul class="menu dropdown-content rounded-md z-[1] w-72 p-2 gap-2 shadow-xl bg-primary-content">
         <caption class="mb-3"><SearchBar /></caption>
@@ -30,7 +30,7 @@
     </ul>
 </details>
 
-<div class="hidden md:flex items-center justify-center gap-5">
+<div class="hidden md:flex items-center justify-center md:gap-10">
     <!-- <SearchBar /> -->
     <div class="flex items-center justify-center rounded-lg gap-1">
         <a class="btn btn-sm {currentUrl.pathname === "/" ? "bg-primary-content text-secondary": "btn-ghost"}" href="/"> <Home class="w-5 h-5" /> </a>

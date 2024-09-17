@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Edit, SquareArrowOutUpRight } from "lucide-svelte";
-    import { pocketbase } from "$lib/utils/pocketbase";
+    import { springbase } from "$lib/utils/springbase";
+    import { currentUser } from "$lib/stores/currentUser";
 
     let isEditing = false;
     export let user: any;
@@ -10,8 +11,14 @@
             e.preventDefault();
             const form = e.target;
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            user = await pocketbase.collection("users").update(user.id, data);
+            const customer = await springbase.collection("customers").update(user.customerId, formData);
+            $currentUser = {
+                ...user,
+                ...customer,
+                id: user.id,
+                customerId: customer.id
+            }
+            user = $currentUser;
             isEditing = false;
             form.reset();
         } catch (err) {
@@ -32,10 +39,10 @@
                         Role:
                     </div>
                     <div class="w-4/5 md:ml-7">
-                        {user.role.toLowerCase()}
+                        {user?.roles[0]?.toLowerCase().split("_")[1]}
                     </div>
                 </div>
-                {#if user.role.toLowerCase() === "customer"}
+                {#if user?.roles[0] === "ROLE_CUSTOMER"}
                     <a href={`/app/${user.id}/apply`} class="btn btn-success btn-sm max-md:btn-xs">
                         Apply to Become a Tailor <SquareArrowOutUpRight class="w-4 h-4" /> 
                     </a>
@@ -82,7 +89,7 @@
                         Role:
                     </div>
                     <div class="w-5/6 ">
-                        {user.role.toLowerCase()}
+                        {user?.roles[0]?.toLowerCase().split("_")[1]}
                     </div>
                 </div>
         
@@ -113,7 +120,7 @@
                     </div>
                 </div>
             </div>
-            <button on:click={() => (isEditing = true)} class="{pocketbase.authStore.model?.id !== user.id ? "hidden": "block"} flex items-center justify-center btn btn-sm max-md:w-full">
+            <button on:click={() => (isEditing = true)} class="{springbase.authStore.model?.id !== user.id ? "hidden": "block"} flex items-center justify-center btn btn-sm max-md:w-full">
                 <Edit class="w-4 h-4" /> Edit
             </button>
         </div>

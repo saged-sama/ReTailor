@@ -4,12 +4,26 @@
     import "../app.css";
     import { page } from "$app/stores";
     import { capitalizeFirstLetter } from "$lib";
+    import { onMount } from "svelte";
+    import { springbase } from "$lib/utils/springbase";
+    import { currentUser } from "$lib/stores/currentUser";
 
     let currentpage = "home";
 
     $: {
         currentpage = $page.url.pathname.split("/").pop() || "";
     }
+    onMount(async () => {
+        springbase.authStore.loadFromStorage();
+        if(springbase.authStore.isValid){
+            const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
+            const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
+            currentUser.set({
+                ...cuserDet,
+                ...customerDet
+            });
+        }
+    });
 </script>
 
 <svelte:head>
