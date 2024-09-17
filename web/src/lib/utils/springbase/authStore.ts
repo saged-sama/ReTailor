@@ -10,11 +10,32 @@ export default class AuthStore {
         // const springbase_auth = localStorage.getItem('springbase_auth');
         // if (springbase_auth) {
             // const auth = JSON.parse(springbase_auth);
-            this.token = ""
-            this.model = {}
+        this.token = ""
+        this.model = {}
+        this.isValid = false;
+        this.isAdmin = false;
+        // }
+    }
+
+    loadFromStorage() {
+        const springbase_auth = localStorage.getItem('springbase_auth');
+        if (springbase_auth) {
+            this.token = springbase_auth;
+            const model: any = jwtDecode(this.token as string);
+            this.model = {
+                id: model.userId,
+                email: model.sub,
+                roles: model.authorities,
+            }
+            this.isValid = this.checkTokenValidity();
+            this.isAdmin = this.model?.roles?.includes('ROLES_ADMIN');
+        }
+        else{
+            this.token = undefined;
+            this.model = undefined;
             this.isValid = false;
             this.isAdmin = false;
-        // }
+        }
     }
 
     loadFromCookie(cookie: string) {
@@ -31,7 +52,12 @@ export default class AuthStore {
         try {
             this.isValid = this.checkTokenValidity();
             if(!this.isValid) throw new Error("JWT invalid");
-            this.model = jwtDecode(this.token as string);
+            const model: any = jwtDecode(this.token as string);
+            this.model = {
+                id: model.userid,
+                email: model.email,
+                roles: model.authorities,
+            }
         } catch (e) {
             console.error('Invalid token or decoding failed', e);
             this.isValid = false;

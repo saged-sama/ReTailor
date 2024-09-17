@@ -1,5 +1,6 @@
 package com.javafest.Retailor.Config;
 
+import com.javafest.Retailor.Entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,8 +21,10 @@ import java.util.function.Function;
 public class JwtService {
     private static final String SECRET = "9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c";
     public String generateToken(UserDetails user) {
+        Users users= (Users) user;
         return Jwts.builder()
                 .setSubject(user.getUsername())
+                .claim("userId", users.getId())
                 .claim("authorities", populateAuthorities(user.getAuthorities()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
@@ -54,6 +57,13 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
+    public Set<String> extractRoles(String token) {
+        String rolesString = extractClaim(token, claims -> claims.get("authorities", String.class));
+        return new HashSet<>(Set.of(rolesString.split(","))); // Split and convert to Set
     }
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

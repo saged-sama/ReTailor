@@ -3,7 +3,7 @@
 </script>
 
 <div
-    class="flex flex-col items-center justify-center md:p-5 gap-5 w-full"
+    class="md:p-5"
 >
     <SignupForm />
 </div>

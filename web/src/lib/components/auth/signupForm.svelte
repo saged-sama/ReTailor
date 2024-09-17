@@ -22,12 +22,9 @@
 
     const isFormFilled = (data: any) => {
         if (
-            data.firstName === "" ||
-            data.lastName === "" ||
-            data.email === "" ||
-            data.phone === "" ||
-            data.password === "" ||
-            data.passwordConfirm === ""
+            data.firstName === "" || data.lastName === "" ||
+            data.email === "" || data.phone === "" || data.password === "" ||
+            data.passwordConfirm === "" || avatar === null || data.address === "" || data.gender === ""
         ) {
             return false;
         }
@@ -39,8 +36,6 @@
         const r = await springbase.collection("users").getList(1, 1, {
             filter: `email = "${email}"`
         })
-
-        console.log(r.content.length);
 
         if(r.content.length > 0) {
             return true;
@@ -134,19 +129,35 @@
             />
         </div>
         <FormInput caption="Email" placeholder="Email" name="email" />
-        <div class="flex flex-col w-full gap-1">
-            <div>
-                <h1 class="text-sm">Mobile Number</h1>
+        <div class="flex items-center justify-between gap-3 w-full">
+            <div class="flex flex-col w-1/2 gap-1">
+                <div>
+                    <h1 class="text-sm">Mobile Number</h1>
+                </div>
+                <div class="flex gap-0">
+                    <h1 class="rounded-l-lg bg-base-200 p-1">+880</h1>
+                    <input
+                        type="text"
+                        placeholder="Mobile Number"
+                        name="phone"
+                        class="input input-sm input-bordered rounded-l-none w-full"
+                    />
+                </div>
             </div>
-            <div class="flex gap-0">
-                <h1 class="rounded-l-lg bg-base-200 p-1">+880</h1>
-                <input
-                    type="text"
-                    placeholder="Mobile Number"
-                    name="phone"
-                    class="input input-sm input-bordered rounded-l-none w-full"
-                />
+
+            <div class="flex flex-col text-sm w-1/2 gap-1">
+                <h1>Gender</h1>
+                <select name="gender" class="select select-text select-sm">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
+        </div>
+
+        <div class="flex flex-col gap-1 justify-center w-full text-sm">
+            <h1>Current Address</h1>
+            <textarea name="address" placeholder="Your current address here, e.g. 221B, Baker Street, London, UK" class="textarea textarea-sm"></textarea>
         </div>
 
         <FormInput

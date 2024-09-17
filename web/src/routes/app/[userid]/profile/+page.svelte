@@ -5,10 +5,13 @@
     import BasicInfo from "$lib/components/profile/basicInfo.svelte";
     import PersonalInfo from "$lib/components/profile/personalInfo/personalInfo.svelte";
 
-    let user: any = undefined;
+    let user: any = {};
 
     onMount(async () => {
-        user = await springbase.collection("users").getOne($page.params.id);
+        const userDet = await springbase.collection("users").getOne($page.params.userid);
+        const customerDet = await springbase.collection("customers").getFirstListItem("user_id", userDet.id);
+        // console.log(userDet, customerDet);
+        user = { ...customerDet, ...userDet, customerId: customerDet.id };
     });
 </script>
 
@@ -16,7 +19,7 @@
     <title>Retailor | Profile{user?.id ? ` | ${user.firstName} ${user.lastName}`: ""}</title>
 </svelte:head>
 
-{#if user}
+{#if user.id}
     <div class="flex flex-col items-center justify-center p-2 md:p-10 md:gap-10 gap-5">
         <BasicInfo {user}/>
         <PersonalInfo {user}/>
