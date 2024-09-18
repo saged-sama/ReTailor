@@ -29,7 +29,6 @@ public class TailorServiceImp implements TailorService {
         tailorDto.setLocation(tailor.getLocation());
         tailorDto.setNationalId(tailor.getNationalId());
         tailorDto.setTailorStatus(tailor.getTailorStatus());
-        tailorDto.setTradeLicense(tailor.getTradeLicense());
         tailorDto.setUsers(tailor.getUsers());
         tailorDto.setApprovalDate(tailor.getApprovalDate());
         tailorDto.setSubmissionDate(tailor.getSubmissionDate());
@@ -50,7 +49,6 @@ public class TailorServiceImp implements TailorService {
             tailorDto.setLocation(tailor.getLocation());
             tailorDto.setNationalId(tailor.getNationalId());
             tailorDto.setTailorStatus(tailor.getTailorStatus());
-            tailorDto.setTradeLicense(tailor.getTradeLicense());
             tailorDto.setUsers(tailor.getUsers());
             tailorDto.setApprovalDate(tailor.getApprovalDate());
             tailorDto.setSubmissionDate(tailor.getSubmissionDate());
@@ -73,7 +71,6 @@ public class TailorServiceImp implements TailorService {
             tailorDto.setLocation(tailor.getLocation());
             tailorDto.setNationalId(tailor.getNationalId());
             tailorDto.setTailorStatus(tailor.getTailorStatus());
-            tailorDto.setTradeLicense(tailor.getTradeLicense());
             tailorDto.setUsers(tailor.getUsers());
             tailorDto.setApprovalDate(tailor.getApprovalDate());
             tailorDto.setSubmissionDate(tailor.getSubmissionDate());
