@@ -28,7 +28,8 @@
             $currentUser = {
                 ...customerDet,
                 ...cuserDet,
-                customerId: customerDet.id
+                customerId: customerDet.id,
+                id: cuserDet.id
             }
             goto("/");
         }

@@ -18,10 +18,14 @@
         if(springbase.authStore.isValid){
             const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
             const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
-            currentUser.set({
+            
+            $currentUser = {
+                ...customerDet,
                 ...cuserDet,
-                ...customerDet
-            });
+                id: cuserDet.id,
+                customerId: customerDet.id
+            };
+            // console.log("Layout: ", $currentUser);
         }
     });
 </script>
