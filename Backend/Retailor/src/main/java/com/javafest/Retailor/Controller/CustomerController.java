@@ -50,7 +50,6 @@ public class CustomerController {
     @PatchMapping("/records/{customerId}")
     public ResponseEntity<Customer> updateCustomerDetails(@RequestHeader("Authorization") String authHeader, @PathVariable String customerId, @ModelAttribute Customer customer, @RequestParam(value = "avatarUpload", required=false) MultipartFile[] files) throws Exception{
         String email;
-        System.out.println(authHeader);
         if(authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
             email = jwtService.extractUsername(jwt);
@@ -75,4 +74,11 @@ public class CustomerController {
 
         return ResponseEntity.ok(customerService.updateCustomer(customer, customerId));
     }
+
+    @GetMapping("/records/{userId}")
+    public Customer getMethodName(@PathVariable String userId) {
+        Users users = usersService.getById(userId);
+        return customerService.getByUsers(users);
+    }
+    
 }

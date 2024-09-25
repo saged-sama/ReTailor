@@ -29,7 +29,6 @@ public class TailorServiceImp implements TailorService {
         tailorDto.setLocation(tailor.getLocation());
         tailorDto.setNationalId(tailor.getNationalId());
         tailorDto.setTailorStatus(tailor.getTailorStatus());
-        tailorDto.setTradeLicense(tailor.getTradeLicense());
         tailorDto.setUsers(tailor.getUsers());
         tailorDto.setApprovalDate(tailor.getApprovalDate());
         tailorDto.setSubmissionDate(tailor.getSubmissionDate());
@@ -50,7 +49,6 @@ public class TailorServiceImp implements TailorService {
             tailorDto.setLocation(tailor.getLocation());
             tailorDto.setNationalId(tailor.getNationalId());
             tailorDto.setTailorStatus(tailor.getTailorStatus());
-            tailorDto.setTradeLicense(tailor.getTradeLicense());
             tailorDto.setUsers(tailor.getUsers());
             tailorDto.setApprovalDate(tailor.getApprovalDate());
             tailorDto.setSubmissionDate(tailor.getSubmissionDate());
@@ -73,7 +71,6 @@ public class TailorServiceImp implements TailorService {
             tailorDto.setLocation(tailor.getLocation());
             tailorDto.setNationalId(tailor.getNationalId());
             tailorDto.setTailorStatus(tailor.getTailorStatus());
-            tailorDto.setTradeLicense(tailor.getTradeLicense());
             tailorDto.setUsers(tailor.getUsers());
             tailorDto.setApprovalDate(tailor.getApprovalDate());
             tailorDto.setSubmissionDate(tailor.getSubmissionDate());
@@ -91,5 +88,10 @@ public class TailorServiceImp implements TailorService {
     @Override
     public Tailor getById(String id) {
         return tailorRepo.findById(id).orElseThrow(() -> new RuntimeException("Tailor not found"));
+    }
+
+    @Override
+    public List<Tailor> getAllByStatusAndPattern(TailorStatus status, String pattern) {
+        return tailorRepo.findByStatusAndByUserPattern(status, pattern);
     }
 }

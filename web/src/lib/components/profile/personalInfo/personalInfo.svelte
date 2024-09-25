@@ -32,7 +32,7 @@
         Personal Information
     </h1>
     {#if isEditing}
-        <form class="flex flex-col items-start justify-start w-full text-sm p-5 gap-3" on:submit={updatePersonalInfo}>
+        <form class="flex flex-col items-start justify-start w-full text-sm p-1 md:p-5 gap-3" on:submit={updatePersonalInfo}>
             <div class="flex max-md:flex-col gap-2 justify-between w-full">
                 <div class="flex items-center justify-center w-5/6">
                     <div class="w-1/5 font-bold">
@@ -49,7 +49,7 @@
                 {/if}
             </div>
 
-            <div class="flex max-md:flex-col gap-2 md:items-center justify-start w-full">
+            <div class="flex max-md:flex-col gap-2 justify-start w-full">
                 <div class="w-1/6 font-bold">
                     Gender: 
                 </div>
@@ -61,7 +61,7 @@
                 </select>
             </div>
             
-            <div class="flex max-md:flex-col gap-2 md:items-center justify-start w-full">
+            <div class="flex max-md:flex-col gap-2 justify-start w-full">
                 <div class="w-1/6 font-bold">
                     Phone:
                 </div>
@@ -69,7 +69,7 @@
                     <div class="flex items-center justify-center p-2 rounded-l-lg bg-primary-content">+880</div> <input type="text" name="phone" class="input input-bordered input-sm rounded-l-none max-md:w-full" value={user.phone || ""} placeholder="Phone Number">
                 </div>
             </div>
-            <div class="flex max-md:flex-col gap-2 md:items-center justify-start w-full">
+            <div class="flex max-md:flex-col gap-2 justify-start w-full">
                 <div class="w-1/6 font-bold">
                     Address:
                 </div>

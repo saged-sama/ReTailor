@@ -22,13 +22,16 @@
         }
 
         else{
+            // console.log(springbase.authStore);
             const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
-            const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
-
+            // console.log(cuserDet);
+            const customerDet = await springbase.collection("customers").getFirstListItem(`user_id=${cuserDet.id}`);
+            // console.log(customerDet);
             $currentUser = {
                 ...customerDet,
                 ...cuserDet,
-                customerId: customerDet.id
+                customerId: customerDet.id,
+                id: cuserDet.id
             }
             goto("/");
         }

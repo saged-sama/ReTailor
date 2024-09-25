@@ -9,9 +9,9 @@
 
     onMount(async () => {
         const userDet = await springbase.collection("users").getOne($page.params.userid);
+        // console.log(userDet)
         const customerDet = await springbase.collection("customers").getFirstListItem("user_id", userDet.id);
-        // console.log(userDet, customerDet);
-        user = { ...customerDet, ...userDet, customerId: customerDet.id };
+        user = { ...customerDet, ...userDet, customerId: customerDet.id, id: userDet.id };
     });
 </script>
 

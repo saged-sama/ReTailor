@@ -34,6 +34,7 @@ export default function crud(incomingHeaders?: {[key: string]: string}){
             });
         
             if(response.ok){
+                // console.log(response);
                 return await response.json();
             } else {
                 throw new Error(response.statusText);

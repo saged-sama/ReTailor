@@ -24,37 +24,38 @@ export default class Collection{
         this.webSocketUrl = this.baseurl.replace("http", "ws");
     }
 
-    async create(data: object | FormData){
+    async create(data: object | FormData, auth: boolean = true){
         let headers: any = {
             "Access-Control-Request-Method": "POST"
         };
-        if(this.authStore.isValid){
+        if(auth && this.authStore.isValid){
             headers["Authorization"] = `Bearer ${this.authStore.token}`;
         }
+        // console.log(headers, data);
         return await crud(headers).POST(`${this.baseurl}/records`, data);
     }
 
-    async update(id: string, data: object){
+    async update(id: string, data: object, auth: boolean = true){
         let headers: any = {
             "Access-Control-Request-Method": "PATCH"
         }
-        if(this.authStore.isValid){
+        if(auth && this.authStore.isValid){
             headers["Authorization"] = `Bearer ${this.authStore.token}`;
         }
         return await crud(headers).PATCH(`${this.baseurl}/records/${id}`, data);
     }
 
-    async delete(id: string){
+    async delete(id: string, auth: boolean = true){
         let headers: any = {
             "Access-Control-Request-Method": "PATCH"
         }
-        if(this.authStore.isValid){
+        if(auth && this.authStore.isValid){
             headers["Authorization"] = `Bearer ${this.authStore.token}`;
         }
         return await crud(headers).DELETE(`${this.baseurl}/records/${id}`);
     }
 
-    async getOne(id: string, options?: object){
+    async getOne(id: string, options?: object, auth: boolean = true){
         let url = `${this.baseurl}/records/${id}`;
         if(options){
             url += "?" + urlSearchParametersFromObject(options);
@@ -62,13 +63,13 @@ export default class Collection{
         let headers: any = {
             "Access-Control-Request-Method": "GET"
         }
-        if(this.authStore.isValid){
+        if(auth && this.authStore.isValid){
             headers["Authorization"] = `Bearer ${this.authStore.token}`;
         }
         return await crud(headers).GET(url);
     }
 
-    async getList(page: number, perPage: number, options?: object){
+    async getList(page: number, perPage: number, options?: object, auth: boolean = true){
         let url = `${this.baseurl}/records?page=${page}&perPage=${perPage}`;
         if(options){
             url += "&" + urlSearchParametersFromObject(options);
@@ -76,19 +77,19 @@ export default class Collection{
         let headers: any = {
             "Access-Control-Request-Method": "GET"
         }
-        if(this.authStore.isValid){
+        if(auth && this.authStore.isValid){
             headers["Authorization"] = `Bearer ${this.authStore.token}`;
         }
         return await crud(headers).GET(url);
     }
 
-    async getFullList(options?: object){
-        return await this.getList(1, 5000, options);
+    async getFullList(options?: object, auth: boolean = true){
+        return await this.getList(1, 5000, options, auth);
     }
 
-    async getFirstListItem(filter: string, options?: object){
+    async getFirstListItem(filter: string, options?: object, auth: boolean = true){
         options = { ...options, filter, skipTotal: 1 };
-        return (await this.getList(1, 1, options));
+        return (await this.getList(1, 1, options, auth));
     }
 
     subscribe() {

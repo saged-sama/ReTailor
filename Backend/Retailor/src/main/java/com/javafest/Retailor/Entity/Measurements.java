@@ -1,5 +1,7 @@
 package com.javafest.Retailor.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,33 +22,37 @@ public class Measurements {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private Double height;
-    private Double neck;
-    private Double shoulder;
-    private Double chest;
-    private Double upperBust;
-    private Double lowerBust;
-    private Double waist;
-    private Double hip;
-    private Double armhole;
-    private Double sleeveLength;
-    private Double bicep;
-    private Double elbow;
-    private Double wrist;
-    private Double backWidth;
-    private Double frontLength;
-    private Double backLength;
-    private Double rise;
-    private Double thigh;
-    private Double Knee;
-    private Double calf;
-    private Double inseam;
-    private Double outseam;
-    private Double bustToWaist;
-    private Double waistToKnee;
-    private Double waistToHem;
+    private String gender;
+    private String height;
+    private String weight;
+    private Integer age;
+    private String neck;
+    private String shoulder;
+    private String chest;
+    private String upperBust;
+    private String lowerBust;
+    private String waist;
+    private String hip;
+    private String armhole;
+    private String sleeveLength;
+    private String bicep;
+    private String elbow;
+    private String wrist;
+    private String backWidth;
+    private String frontLength;
+    private String backLength;
+    private String verticalTrunk;
+    private String rise;
+    private String thigh;
+    private String Knee;
+    private String calf;
+    private String inseam;
+    private String outseam;
+    private String bustToWaist;
+    private String waistToKnee;
+    private String waistToHem;
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "customerId")
     private Customer customerId;
-
 }

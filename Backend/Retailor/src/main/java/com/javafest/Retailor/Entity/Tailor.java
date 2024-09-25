@@ -14,6 +14,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -59,12 +60,14 @@ public class Tailor {
     )
     @JsonIgnore
     private Set<Product> products= new HashSet<>();
-    private String nationalId;
-    private String tradeLicense;
+    @Embedded
+    private NationalId nationalId;
     @CreationTimestamp
     private LocalDateTime submissionDate;
     private LocalDateTime approvalDate;
     private String location;
+    private String contact;
+    private String email;
 
     @ElementCollection
     @CollectionTable(name = "tailor_shirt_design", joinColumns = @JoinColumn(name = "tailor_id"))

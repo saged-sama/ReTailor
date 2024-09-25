@@ -2,6 +2,7 @@ package com.javafest.Retailor.Dto;
 
 import java.time.LocalDateTime;
 
+import com.javafest.Retailor.Entity.NationalId;
 import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.TailorStatus;
 
@@ -17,8 +18,7 @@ public class TailorDto {
     private String name;
     private String bio;
     private String skills;
-    private String nationalId;
-    private String tradeLicense;
+    private NationalId nationalId;
     private LocalDateTime submissionDate;
     private LocalDateTime approvalDate;
     private String location;

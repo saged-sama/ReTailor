@@ -12,6 +12,11 @@ export default {
         "platypi": ["Platypi", "sans-serif"],
         "exo": ["Exo 2", "sans-serif"],
         "shadows-into-light": ["Shadows Into Light", "cursive"],
+      },
+      spacing: {
+        '128': '32rem',
+        '144': '36rem',
+        '160': '40rem',
       }
     }
   },
@@ -44,6 +49,7 @@ export default {
   },
 
   plugins: [
-    require("daisyui")
+    require("daisyui"),
+    require("@tailwindcss/typography"),
   ]
 } as Config;
