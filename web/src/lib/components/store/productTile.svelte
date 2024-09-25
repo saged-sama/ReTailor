@@ -1,17 +1,11 @@
 <script lang="ts">
     import { PUBLIC_API_URL } from "$env/static/public";
-    import { cart } from "$lib/stores/cart";
     import { ShoppingBasket } from "lucide-svelte";
 
     export let product: any;
     
     let imageurl: string = `${PUBLIC_API_URL}/api/files/product/${product.id}/${product.images}`;
 
-    const addToCart = () => {
-        cart.update(value => {
-            return [...value, product]; 
-        });
-    }
 </script>
 
 <div class="flex flex-col rounded-md bg-base-100 h-full w-64 shadow-xl xl:hover:scale-105 transition-all duration-300">
@@ -32,7 +26,7 @@
             <div class="flex gap-1"><h1 class="font-bold font-platypi">Available:</h1> <h1 class="{product.stock === 0 ? "text-error": ""}">{product.stock ? `${product.stock} pcs` : "Out of Stock"}</h1> </div>
         </div>
         <div class="flex gap-2 justify-end border-t-2 border-gray-800 p-1">
-            <button class="btn btn-ghost btn-sm" on:click={addToCart}><ShoppingBasket class="w-4 h-4"/> Add to Cart</button>
+            <button class="btn btn-ghost btn-sm"><ShoppingBasket class="w-4 h-4"/> Add to Cart</button>
             <button class="btn btn-primary xl:hover:btn-ghost btn-sm">Buy Now</button>
         </div>
     </div>

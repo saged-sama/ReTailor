@@ -1,6 +1,13 @@
 package com.javafest.Retailor.Entity;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +24,6 @@ public class PortfolioImages {
     private String description;
     @ManyToOne
     @JoinColumn(name = "portfolio_id")
+    @JsonIgnore
     private Portfolio portfolio;
 }

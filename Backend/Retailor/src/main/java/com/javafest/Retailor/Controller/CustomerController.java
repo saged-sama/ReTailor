@@ -74,4 +74,11 @@ public class CustomerController {
 
         return ResponseEntity.ok(customerService.updateCustomer(customer, customerId));
     }
+
+    @GetMapping("/records/{userId}")
+    public Customer getMethodName(@PathVariable String userId) {
+        Users users = usersService.getById(userId);
+        return customerService.getByUsers(users);
+    }
+    
 }

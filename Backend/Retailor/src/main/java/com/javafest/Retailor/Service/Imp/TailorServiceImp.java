@@ -89,4 +89,9 @@ public class TailorServiceImp implements TailorService {
     public Tailor getById(String id) {
         return tailorRepo.findById(id).orElseThrow(() -> new RuntimeException("Tailor not found"));
     }
+
+    @Override
+    public List<Tailor> getAllByStatusAndPattern(TailorStatus status, String pattern) {
+        return tailorRepo.findByStatusAndByUserPattern(status, pattern);
+    }
 }

@@ -14,4 +14,5 @@ public interface TailorService {
     public Tailor getByUser(Users users);
 
     public Tailor getById(String id);
+    public List<Tailor> getAllByStatusAndPattern(TailorStatus status, String pattern);
 }

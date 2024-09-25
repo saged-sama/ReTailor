@@ -49,7 +49,8 @@ public class AuthController {
     @PostMapping("/records")
     public ResponseEntity<?> saveCustomer(@ModelAttribute RegisterReq registerReq,
                                                                @RequestParam("avatar") MultipartFile[] files) throws IOException {
-        
+                                                                
+        System.out.println(registerReq);
         if(!registerReq.getPassword().equals(registerReq.getPasswordConfirm())){
             return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
         }

@@ -35,7 +35,7 @@
         console.log(email);
         const r = await springbase.collection("users").getList(1, 1, {
             filter: `email = "${email}"`
-        })
+        }, false)
 
         if(r.content.length > 0) {
             return true;
@@ -74,7 +74,7 @@
                 return;
             }
 
-            record = await springbase.collection("users").create(formData);
+            record = await springbase.collection("users").create(formData, false);
         } catch (err) {
             console.error("Error signing up: ", err);
         }
@@ -106,7 +106,7 @@
     >
         <label for="avatar" class="flex flex-col items-center justify-center gap-1">
             {#if avatar}
-                <img src={avatarPreview} alt="User Avatar" class="w-20 h-20 rounded-full">
+                <img src={avatarPreview} alt="User Avatar" class="w-20 h-20 rounded-full object-cover">
             {:else}
                 <div class="border border-gray-500 p-3 rounded-full">
                     <ImageUp class="w-10 h-10"/>

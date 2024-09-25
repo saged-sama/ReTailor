@@ -1,10 +1,11 @@
 package com.javafest.Retailor.Repository;
 
-import com.javafest.Retailor.Entity.PortfolioImages;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.javafest.Retailor.Entity.PortfolioImages;
 
 @Repository
 public interface PortfolioImagesRepo extends JpaRepository<PortfolioImages,String> {

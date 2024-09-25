@@ -2,6 +2,7 @@ package com.javafest.Retailor.Controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.javafest.Retailor.Config.JwtService;
 import com.javafest.Retailor.Dto.TailorDto;
+import com.javafest.Retailor.Entity.NationalId;
 import com.javafest.Retailor.Entity.Portfolio;
 import com.javafest.Retailor.Entity.PortfolioImages;
 import com.javafest.Retailor.Entity.Tailor;
@@ -32,23 +34,14 @@ import com.javafest.Retailor.Entity.Users;
 import com.javafest.Retailor.Enum.Role;
 import com.javafest.Retailor.Enum.TailorStatus;
 import com.javafest.Retailor.Repository.PortfolioImagesRepo;
-import com.javafest.Retailor.Repository.TailorRepo;
 import com.javafest.Retailor.Repository.UsersRepo;
 import com.javafest.Retailor.Service.FileService;
 import com.javafest.Retailor.Service.PortfolioService;
 import com.javafest.Retailor.Service.TailorService;
 import com.javafest.Retailor.Service.UsersService;
-import jakarta.servlet.annotation.MultipartConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
-
+@RestController
+@RequestMapping("/api/collections/tailors")
 public class TailorController {
     @Autowired
     private TailorService tailorService;
@@ -65,9 +58,11 @@ public class TailorController {
     @Autowired
     private PortfolioImagesRepo portfolioImagesRepo;
 
-    @PostMapping("/")
+    @PostMapping("/records")
     public ResponseEntity<?> saveTailor(@ModelAttribute TailorDto tailorDto,
-                                        @RequestParam("avatars") MultipartFile[] files,
+                                        @RequestParam("nationalIdNo") String nationalIdNo,
+                                        @RequestParam("nationalIdFront") MultipartFile[] nationalIdFront,
+                                        @RequestParam("nationalIdBack") MultipartFile[] nationalIdBack,
                                         @RequestHeader("Authorization") String authHeader) throws Exception {
         String email;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -79,6 +74,7 @@ public class TailorController {
 
         Optional<Users> users = usersRepo.findByEmail(email);
         try {
+
             Tailor tailor =new Tailor();
             tailor.setName(tailorDto.getName());
             tailor.setBio(tailorDto.getBio());
@@ -87,20 +83,37 @@ public class TailorController {
                 tailor.setUsers(users.get());
             else return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             tailor.setLocation(tailorDto.getLocation());
-            List<String> images=fileService.saveFiles(files);
+            List<String> images=fileService.saveFiles(nationalIdFront);
+            tailorDto.setNationalId(new NationalId());
+            tailorDto.getNationalId().setNationalId(nationalIdNo);
             tailorDto.getNationalId().setFrontImage(images.get(0));
-            tailorDto.getNationalId().setBackImage(images.get(1));
+            images=fileService.saveFiles(nationalIdBack);
+            tailorDto.getNationalId().setBackImage(images.get(0));
             tailor.setNationalId(tailorDto.getNationalId());
             tailor.setSkills(tailorDto.getSkills());
             TailorDto savedTailor = tailorService.save(tailor);
+            // System.out.println(savedTailor);
 
-            return new ResponseEntity<>(savedTailor, HttpStatus.CREATED);
+            return new ResponseEntity<>(null, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println("Error creating tailor: " + e.toString());
             // Handle any exceptions and return a 500 (INTERNAL SERVER ERROR) status
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping("/records/verified")
+    public ResponseEntity<List<Tailor>> getTailorsByVerifiedStatus(
+        @RequestParam("pattern") String pattern
+    ){
+        return ResponseEntity.ok(tailorService.getAllByStatusAndPattern(TailorStatus.APPROVED, pattern));
+    }
+
+    @GetMapping("/records/{tailorId}")
+    public Tailor getTailor(@PathVariable String tailorId) {
+        return tailorService.getById(tailorId);
+    }
+    
     @GetMapping("/status")
     public ResponseEntity<List<TailorDto>> getTailorsByStatus(){
         return ResponseEntity.ok(tailorService.getAllByStatus(TailorStatus.PENDING));

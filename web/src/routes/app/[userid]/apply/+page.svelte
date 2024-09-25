@@ -24,13 +24,16 @@
     </div>
 
     <div class="w-full overflow-hidden">
-        <div class="max-md:grid grid-cols-1 grid-flow-row hidden items-center justify-start">
-            <div>
-                <TailorApplicationForm />
-            </div>
-            <div>
-                <AboutApplying />
-            </div>
+        <div class="max-md:block hidden items-center justify-start">
+            {#if applicationForm}
+                <div transition:fly={{duration: 500, x: -300}}>
+                    <TailorApplicationForm />
+                </div>
+            {:else}    
+                <div transition:fly={{duration: 500, x: 300}}>
+                    <AboutApplying />
+                </div>
+            {/if}
         </div>
     </div>
 </div>

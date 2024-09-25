@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("/api/collections/users/*/**").permitAll()
                             .requestMatchers("/api/collections/customers/*/**").permitAll()
+                            .requestMatchers("/api/*/**").permitAll()
                             .requestMatchers("/api/files/*/**").permitAll()
                             //.requestMatchers("/api/student")
                             //.hasAnyRole("STUDENT","TEACHER")

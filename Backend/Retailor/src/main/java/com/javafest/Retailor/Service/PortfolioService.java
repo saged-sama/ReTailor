@@ -1,8 +1,8 @@
 package com.javafest.Retailor.Service;
 
-import com.javafest.Retailor.Entity.Portfolio;
 import java.io.IOException;
-import org.springframework.web.multipart.MultipartFile;
+
+import com.javafest.Retailor.Entity.Portfolio;
 
 public interface PortfolioService {
     public Portfolio savePortfolio(Portfolio portfolio);

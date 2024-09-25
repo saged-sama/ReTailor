@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 
 export let currentUser = writable({
     id: "",
+    customerId: "",
     name: "",
     gender: "",
     address: "",
@@ -15,6 +16,7 @@ export let currentUser = writable({
 export const resetCurrentUser = () => {
     currentUser.set({
         id: "",
+        customerId: "",
         name: "",
         gender: "",
         address: "",

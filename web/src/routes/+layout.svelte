@@ -14,19 +14,23 @@
         currentpage = $page.url.pathname.split("/").pop() || "";
     }
     onMount(async () => {
-        springbase.authStore.loadFromStorage();
-        if(springbase.authStore.isValid){
-            const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
-            const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
-            
-            $currentUser = {
-                ...customerDet,
-                ...cuserDet,
-                id: cuserDet.id,
-                customerId: customerDet.id
-            };
-            // console.log("Layout: ", $currentUser);
+        try{
+            springbase.authStore.loadFromStorage();
+            if(springbase.authStore.isValid){
+                const cuserDet = await springbase.collection("users").getOne(springbase.authStore.model.id);
+                const customerDet = await springbase.collection("customers").getFirstListItem("user_id", cuserDet.id);
+                
+                $currentUser = {
+                    ...customerDet,
+                    ...cuserDet,
+                    id: cuserDet.id,
+                    customerId: customerDet.id
+                };
+            }
         }
+        catch(e){
+        }
+        // console.log($currentUser);
     });
 </script>
 
@@ -39,5 +43,5 @@
     <div class="w-screen h-full mt-14">
         <slot></slot>
     </div>
-    <Footer />
+    <!-- <Footer /> -->
 </div>
